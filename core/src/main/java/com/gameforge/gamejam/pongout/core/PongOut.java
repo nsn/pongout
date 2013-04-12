@@ -63,6 +63,6 @@ public class PongOut implements Game {
 
 	@Override
 	public int updateRate() {
-		return 25;
+		return 0;
 	}
 }

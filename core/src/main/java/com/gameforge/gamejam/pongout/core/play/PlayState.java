@@ -48,9 +48,6 @@ public class PlayState extends GameState {
 		board.spawnBall();
 		root.addChild(board);
 
-		Paddle p = new Paddle();
-		root.addChild(p);
-
 		scene = new Scene(root);
 	}
 

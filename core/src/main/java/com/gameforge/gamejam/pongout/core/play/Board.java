@@ -20,6 +20,9 @@ public class Board extends GroupNode<Node> {
 
 		setDrawBoundary(true);
 		setBoundaryColor(Color.blue(255));
+
+		Paddle p = new Paddle();
+		addChild(p);
 	}
 
 	public void spawnBall() {
@@ -34,6 +37,15 @@ public class Board extends GroupNode<Node> {
 
 		balls.add(b);
 		addChild(b);
+	}
+
+	@Override
+	public void update(float deltams) {
+		super.update(deltams);
+		// move balls
+		for (Ball b : balls) {
+			b.transform(b.trans);
+		}
 	}
 
 }
