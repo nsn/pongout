@@ -7,14 +7,25 @@ import pythagoras.f.Vector;
 import com.gameforge.gamejam.pongout.core.PongoutSprite;
 
 public class Ball extends PongoutSprite {
+	private static final float INITIAL_SPEED = 5.0f; // pixels per ms
 	private static final Dimension DIMENSIONS = new Dimension(20, 20);
 	private static final Vector OFFSET = new Vector();
-	private float speed;
+	private float speed; // pixels/ms
+	private Vector direction;
 
-	Ball() {
+	Ball(Vector direction) {
 		super(DIMENSIONS, OFFSET);
+		speed = INITIAL_SPEED;
+		this.direction = direction.normalize();
+
 		setDrawBoundary(true);
 		setBoundaryColor(Color.rgb(0, 0, 255));
-		translate(new Vector(100, 100));
 	}
+
+	@Override
+	public void update(float delta) {
+		translate(direction.scale(speed));
+		super.update(delta);
+	}
+
 }
