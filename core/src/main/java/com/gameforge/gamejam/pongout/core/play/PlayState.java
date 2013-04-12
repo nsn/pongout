@@ -19,6 +19,7 @@ public class PlayState extends GameState {
 	private final InputListenerList inputListeners;
 	private final UserInput player1Input;
 	private final UserInput player2Input;
+	private Board board;
 
 	public PlayState(PlayNRenderer renderer) {
 		super(GameState.STATE.PLAY, renderer);
@@ -41,6 +42,11 @@ public class PlayState extends GameState {
 
 		// init scene
 		GroupNode<Spatial> root = new GroupNode<Spatial>();
+
+		// init board
+		board = new Board();
+		board.spawnBall();
+		root.addChild(board);
 
 		Paddle p = new Paddle();
 		root.addChild(p);
