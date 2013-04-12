@@ -32,7 +32,7 @@ public class PlayState extends GameState {
 	@Override
 	public void paint(Surface surface, Rectangle renderRect, float alpha) {
 		surface.clear();
-		surface.setFillColor(Color.rgb(255, 255, 255));
+		surface.setFillColor(Color.rgb(0, 0, 0));
 		surface.fillRect(0.0f, 0.0f, renderRect.width, renderRect.height);
 		renderer.render(scene, renderRect, surface);
 	}

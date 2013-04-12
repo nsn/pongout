@@ -9,14 +9,15 @@ import pythagoras.f.Rectangle;
 import com.gameforge.gamejam.pongout.core.play.PlayState;
 
 public class PongOut implements Game {
-	public static final int SCREENWIDTH = 640;
-	public static final int SCREENHEIGHT = 480;
+	public static final int SCREENWIDTH = 1280;
+	public static final int SCREENHEIGHT = 768;
 	private GameState currentState;
 	private PlayNRenderer renderer;
 	private float frameAlpha;
 
 	@Override
 	public void init() {
+		graphics().ctx().setSize(SCREENWIDTH, SCREENHEIGHT);
 		ImmediateLayer gameLayer = graphics().createImmediateLayer(SCREENWIDTH,
 				SCREENHEIGHT, new ImmediateLayer.Renderer() {
 					@Override
@@ -25,6 +26,7 @@ public class PongOut implements Game {
 								SCREENWIDTH, SCREENHEIGHT), frameAlpha);
 					}
 				});
+
 		graphics().rootLayer().add(gameLayer);
 		renderer = new PlayNRenderer();
 		changeState(GameState.STATE.PLAY);
