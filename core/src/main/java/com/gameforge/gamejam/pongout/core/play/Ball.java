@@ -26,7 +26,7 @@ public class Ball extends GameObject {
 	}
 
 	public void update(float delta) {
-		//velocity = direction.scale(speed);
+		velocity = direction.scale(speed);
 		super.update(delta);
 	}
 }
