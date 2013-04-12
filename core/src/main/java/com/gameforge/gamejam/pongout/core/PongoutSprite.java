@@ -18,6 +18,14 @@ public class PongoutSprite extends Sprite<Image> {
 		super(texture, d, offset);
 	}
 
+	public PongoutSprite(Dimension d) {
+		super(assets().getImage(SPRITESHEET), d);
+	}
+
+	public PongoutSprite(Dimension d, Vector offset) {
+		super(assets().getImage(SPRITESHEET), d, offset);
+	}
+
 	public static PongoutSprite create(float w, float h) {
 		return create(w, h, 0, 0);
 	}
