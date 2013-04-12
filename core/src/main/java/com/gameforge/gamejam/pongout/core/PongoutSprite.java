@@ -8,7 +8,7 @@ import pythagoras.f.Vector;
 import com.nightspawn.sg.Sprite;
 
 public class PongoutSprite extends Sprite<Image> {
-	public static final String SPRITESHEET = "images/dummy.png";
+	public static final String SPRITESHEET = "images/spritesheet.png";
 
 	public PongoutSprite(Image texture, Dimension d) {
 		super(texture, d);

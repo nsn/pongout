@@ -7,17 +7,23 @@ import playn.core.Surface;
 import pythagoras.f.Rectangle;
 
 import com.gameforge.gamejam.pongout.core.play.PlayState;
+import playn.core.Image;
+import static playn.core.PlayN.assets;
 
 public class PongOut implements Game {
 	public static final int SCREENWIDTH = 1280;
 	public static final int SCREENHEIGHT = 768;
 	private GameState currentState;
 	private PlayNRenderer renderer;
-	private float frameAlpha;
+	private float frameAlpha = 1.0f;
 
 	@Override
 	public void init() {
 		graphics().ctx().setSize(SCREENWIDTH, SCREENHEIGHT);
+
+        Image backgroundImage = assets().getImage("images/background.jpg");
+        graphics().rootLayer().add(graphics().createImageLayer(backgroundImage));
+        
 		ImmediateLayer gameLayer = graphics().createImmediateLayer(SCREENWIDTH,
 				SCREENHEIGHT, new ImmediateLayer.Renderer() {
 					@Override
@@ -28,8 +34,10 @@ public class PongOut implements Game {
 				});
 
 		graphics().rootLayer().add(gameLayer);
-		renderer = new PlayNRenderer();
+
+        renderer = new PlayNRenderer();
 		changeState(GameState.STATE.PLAY);
+        
 	}
 
 	public void changeState(GameState.STATE newState) {

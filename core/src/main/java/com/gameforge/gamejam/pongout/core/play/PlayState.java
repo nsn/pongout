@@ -2,7 +2,6 @@ package com.gameforge.gamejam.pongout.core.play;
 
 import static playn.core.PlayN.keyboard;
 import static playn.core.PlayN.log;
-import playn.core.Color;
 import playn.core.Key;
 import playn.core.Surface;
 import pythagoras.f.Rectangle;
@@ -44,7 +43,7 @@ public class PlayState extends GameState {
 		GroupNode<Spatial> root = new GroupNode<Spatial>();
 
 		// init board
-		board = new Board();
+		board = new Board(player1Input, player2Input);
 		board.spawnBall();
 		root.addChild(board);
 
@@ -64,9 +63,6 @@ public class PlayState extends GameState {
 
 	@Override
 	public void paint(Surface surface, Rectangle renderRect, float alpha) {
-		surface.clear();
-		surface.setFillColor(Color.rgb(0, 0, 0));
-		surface.fillRect(0.0f, 0.0f, renderRect.width, renderRect.height);
 		renderer.render(scene, renderRect, surface, alpha);
 
 		// surface.setTransform(1, 0, 0, 1, 0, 0);
@@ -78,7 +74,6 @@ public class PlayState extends GameState {
 		// surface.fillRect(board.draw[1].x, board.draw[1].y, 5, 5);
 		// surface.setFillColor(Color.rgb(0, 0, 255));
 		// surface.fillRect(board.draw[2].x, board.draw[2].y, 5, 5);
-
 	}
 
 	@Override

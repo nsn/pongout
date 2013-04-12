@@ -9,7 +9,7 @@ import com.gameforge.gamejam.pongout.core.PongoutSprite;
 public class Ball extends GameObject {
 	private static final float INITIAL_SPEED = 1200f; // pixels per sec
 	private static final Dimension DIMENSION = new Dimension(20, 20);
-	private static final Vector OFFSET = new Vector();
+	private static final Vector OFFSET = new Vector(0, 420);
 	private float speed; // pixels/ms
 	Vector direction;
 	private PongoutSprite sprite;
@@ -26,7 +26,7 @@ public class Ball extends GameObject {
 	}
 
 	public void update(float delta) {
-		velocity = direction.scale(speed);
+		//velocity = direction.scale(speed);
 		super.update(delta);
 	}
 }
