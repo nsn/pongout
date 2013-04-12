@@ -1,4 +1,4 @@
 pongout
 =======
 
-GameForge GameJam 1 Repo
+GameForge GameJam 1 Project by 
