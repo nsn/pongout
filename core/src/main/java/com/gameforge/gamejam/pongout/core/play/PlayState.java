@@ -42,6 +42,9 @@ public class PlayState extends GameState {
 		// init scene
 		GroupNode<Spatial> root = new GroupNode<Spatial>();
 
+		Paddle p = new Paddle();
+		root.addChild(p);
+
 		scene = new Scene(root);
 	}
 
