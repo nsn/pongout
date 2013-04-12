@@ -7,11 +7,11 @@ import pythagoras.f.Vector;
 import com.gameforge.gamejam.pongout.core.PongoutSprite;
 
 public class Ball extends GameObject {
-	private static final float INITIAL_SPEED = 100f; // pixels per sec
+	private static final float INITIAL_SPEED = 1200f; // pixels per sec
 	private static final Dimension DIMENSION = new Dimension(20, 20);
 	private static final Vector OFFSET = new Vector();
 	private float speed; // pixels/ms
-	private Vector direction;
+	Vector direction;
 	private PongoutSprite sprite;
 
 	Ball(Vector direction) {

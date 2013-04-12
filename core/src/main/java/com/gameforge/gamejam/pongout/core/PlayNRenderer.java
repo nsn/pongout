@@ -20,12 +20,14 @@ public class PlayNRenderer implements SceneGraphVisitor<Image> {
 	private Surface currentTarget;
 	private BoundingRectangle viewPort;
 	private Framerate frameRate;
+	private float frameAlpha;
 
 	public PlayNRenderer() {
 		frameRate = new Framerate(PlayN.currentTime());
 	}
 
-	public void render(Scene s, Rectangle v, Surface target) {
+	public void render(Scene s, Rectangle v, Surface target, float alpha) {
+		frameAlpha = alpha;
 		frameRate.onPaint(PlayN.currentTime());
 		// PlayN.log().debug("asdf " + frameRate.framerate());
 		currentTarget = target;

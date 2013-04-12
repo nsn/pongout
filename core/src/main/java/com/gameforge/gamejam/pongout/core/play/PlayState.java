@@ -67,7 +67,18 @@ public class PlayState extends GameState {
 		surface.clear();
 		surface.setFillColor(Color.rgb(0, 0, 0));
 		surface.fillRect(0.0f, 0.0f, renderRect.width, renderRect.height);
-		renderer.render(scene, renderRect, surface);
+		renderer.render(scene, renderRect, surface, alpha);
+
+		// surface.setTransform(1, 0, 0, 1, 0, 0);
+		// surface.drawLine(0, Board.OFFSET.y, Board.DIMENSION.width,
+		// Board.OFFSET.y, 1);
+		// surface.setFillColor(Color.rgb(255, 0, 0));
+		// surface.fillRect(board.draw[0].x, board.draw[0].y, 5, 5);
+		// surface.setFillColor(Color.rgb(0, 255, 0));
+		// surface.fillRect(board.draw[1].x, board.draw[1].y, 5, 5);
+		// surface.setFillColor(Color.rgb(0, 0, 255));
+		// surface.fillRect(board.draw[2].x, board.draw[2].y, 5, 5);
+
 	}
 
 	@Override

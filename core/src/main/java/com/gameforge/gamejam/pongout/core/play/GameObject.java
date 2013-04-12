@@ -22,8 +22,9 @@ public class GameObject extends GroupNode<Node> {
 		trans.translate(distance.x, distance.y);
 
 		BoundingRectangle ob = getWorldBound();
-		BoundingRectangle nb = ob.transform(trans);
+		BoundingRectangle nb = ob.translate(trans);
 
 		newBoundingRectangle = nb;
 	}
+
 }
