@@ -16,13 +16,13 @@ import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Node;
 
 public class Board extends GroupNode<Node> {
-    public static final Vector OFFSET = new Vector(20.0f, 48.0f);
-    public static final Dimension DIMENSION = new Dimension(1240, 705);
+    public static final Vector OFFSET = new Vector(20.0f, 100.0f);
+    public static final Dimension DIMENSION = new Dimension(1240, 600);
     public static final float TOP = OFFSET.y;
     public static final float BOTTOM = OFFSET.y + DIMENSION.height;
     public static final float LEFT = OFFSET.x;
     public static final float RIGHT = OFFSET.x + DIMENSION.width;
-    public static final int POWERUP_DROPCHANCE = 125;
+    public static final int POWERUP_DROPCHANCE = 25;
     private ArrayList<Ball> balls;
     private ArrayList<Ball> ballsToRemove;
     private ArrayList<Ball> ballsToSpawn;
