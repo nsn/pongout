@@ -16,13 +16,13 @@ import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Node;
 
 public class Board extends GroupNode<Node> {
-    public static final Vector OFFSET = new Vector(20.0f, 48.0f);
-    public static final Dimension DIMENSION = new Dimension(1240, 705);
+    public static final Vector OFFSET = new Vector(20.0f, 60.0f);
+    public static final Dimension DIMENSION = new Dimension(1240, 660);
     public static final float TOP = OFFSET.y;
     public static final float BOTTOM = OFFSET.y + DIMENSION.height;
     public static final float LEFT = OFFSET.x;
     public static final float RIGHT = OFFSET.x + DIMENSION.width;
-    public static final int POWERUP_DROPCHANCE = 125;
+    public static final int POWERUP_DROPCHANCE = 25;
     private ArrayList<Ball> balls;
     private ArrayList<Ball> ballsToRemove;
     private ArrayList<Ball> ballsToSpawn;
@@ -37,6 +37,7 @@ public class Board extends GroupNode<Node> {
     Scores scores;
     BrickLayout brickLayout;
     boolean gameOver;
+    private boolean increaseBallSpeed = false;
 
     public Board(UserInput player1Input, UserInput player2Input) {
         setTranslation(OFFSET);
@@ -59,17 +60,17 @@ public class Board extends GroupNode<Node> {
         player2Paddle.setName("player2");
         addChild(player2Paddle);
 
-        scores = new Scores();
-        addChild(scores);
-
         brickLayout = new BrickLayout();
         addChild(brickLayout);
 
+        scores = new Scores();
+        addChild(scores);
+        
         Area a = new Area(DIMENSION);
         addChild(a);
 
         setBoundaryColor(Color.rgb(255, 0, 255));
-        setDrawBoundary(true);
+        setDrawBoundary(false);
 
     }
 
@@ -131,6 +132,19 @@ public class Board extends GroupNode<Node> {
                 lastActivePaddle.getUserInput().switchKeys();
                 lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.CONTROLS);
             }
+            break;
+        case BALLSPEED:
+            if(lastActivePaddle != null) {
+                lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.BALLSPEED);
+            }
+            increaseBallSpeed = true;
+            break;
+        case BOMB:
+            if(lastActivePaddle != null) {
+                lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.BOMB);
+            }
+            b.isBomb = true;
+            break;
         }
 
     }
@@ -160,6 +174,12 @@ public class Board extends GroupNode<Node> {
                 powerUps.add(pu);
                 addChild(pu);
             }
+        }
+        if(increaseBallSpeed) {
+            for (Ball ball : balls) {
+                ball.speed *= 1.5;
+            }   
+            increaseBallSpeed = false;
         }
         bricksToRemove.clear();
         for (PowerUp powerUp : powerUpsToRemove) {

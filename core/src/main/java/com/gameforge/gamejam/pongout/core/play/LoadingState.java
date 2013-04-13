@@ -21,8 +21,24 @@ import pythagoras.f.Rectangle;
  * @author sascha
  */
 public class LoadingState extends GameState{
+    
+    ResultInput resultInput;
+    Scene scene;
+    private LoadingScreen loadingScreen;
+    
     public LoadingState(PlayNRenderer renderer, PongOut pongOut) {
-        super(GameState.STATE.LOADING, renderer, pongOut);
+        super(GameState.STATE.RESULT, renderer, pongOut);
+        resultInput = new ResultInput();
+        keyboard().setListener(resultInput);
+		// init scene
+		GroupNode<Spatial> root = new GroupNode<Spatial>();
+
+		// init board
+        loadingScreen = new LoadingScreen();
+        root.addChild(loadingScreen);
+        
+		scene = new Scene(root);        
+
     }
 
     @Override
@@ -37,12 +53,18 @@ public class LoadingState extends GameState{
 
     @Override
     public void paint(Surface surface, Rectangle renderRect, float alpha) {
-        surface.setFillColor(Color.rgb(0, 0, 0));
-        surface.fillRect(0, 0, 1280, 800);
+//        surface.setFillColor(Color.rgb(0, 0, 0));
+//        surface.fillRect(0, 0, 1280, 800);
+        renderer.render(scene, renderRect, surface, alpha);
     }
 
     @Override
     public void update(float delta) {
+        scene.update(delta);
+        if(resultInput.newGame) {
+            log().info("starting game...");
+            pongOut.changeState(GameState.STATE.PLAY);
+        }
     }
         
 }

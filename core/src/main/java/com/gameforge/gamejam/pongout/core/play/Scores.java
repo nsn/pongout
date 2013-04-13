@@ -21,8 +21,8 @@ public class Scores extends GroupNode<Spatial> {
     public static final int PLAYER2_POINTS_OFFSET = 1000;
     private static final int SPRITESHEET_OFFSET = 440;
     private static final int MAX_HP = 5;
-    public static final int WIDTH = 30;
-    public static final int HEIGHT = 45;
+    public static final int WIDTH = 20;
+    public static final int HEIGHT = 30;
     
     List<PongoutSprite> player1Points;
     List<PongoutSprite> player2Points;
@@ -32,13 +32,13 @@ public class Scores extends GroupNode<Spatial> {
         player2Points = new ArrayList<PongoutSprite>();
         for (int i = 0; i < MAX_HP; i++) {
             PongoutSprite player1Heart = PongoutSprite.create(WIDTH, HEIGHT, 0, SPRITESHEET_OFFSET);
-            player1Heart.translate(new Vector(40 * i + PLAYER1_POINTS_OFFSET, 0));
+            player1Heart.translate(new Vector(WIDTH * i + PLAYER1_POINTS_OFFSET, -45));
             player1Heart.setBoundaryColor(Color.rgb(255, 0, 255));
             player1Points.add(player1Heart);
             addChild(player1Heart);
             
             PongoutSprite player2Heart = PongoutSprite.create(WIDTH, HEIGHT, 0, SPRITESHEET_OFFSET);
-            player2Heart.translate(new Vector(40 * i + PLAYER2_POINTS_OFFSET, 0));
+            player2Heart.translate(new Vector(WIDTH * i + PLAYER2_POINTS_OFFSET, -45));
             player2Heart.setBoundaryColor(Color.rgb(255, 0, 255));
             player2Points.add(player2Heart);
             addChild(player2Heart);

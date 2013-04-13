@@ -15,8 +15,8 @@ public class RandomPowerUpGenerator {
 
     public static PowerUp generate(Brick brick) {
         int roll = new Random().nextInt(PowerUp.TYPE.values().length);
-        PowerUp powerUp = new PowerUp(PowerUp.TYPE.values()[roll], new Vector(brick.sprite.getWorldBound().minX(), brick.sprite.getWorldBound().minY()-50));     
-        //PowerUp powerUp = new PowerUp(PowerUp.TYPE.CONTROLS, new Vector(brick.sprite.getWorldBound().minX(), brick.sprite.getWorldBound().minY()-50));     
+        PowerUp powerUp = new PowerUp(PowerUp.TYPE.values()[roll], new Vector(brick.sprite.getLocalTransform().tx, brick.sprite.getLocalTransform().ty));     
+//        PowerUp powerUp = new PowerUp(PowerUp.TYPE.BOMB, new Vector(brick.sprite.getLocalTransform().tx, brick.sprite.getLocalTransform().ty));     
         return powerUp;
     }
     

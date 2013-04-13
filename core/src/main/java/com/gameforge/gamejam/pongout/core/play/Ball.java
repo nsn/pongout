@@ -22,7 +22,7 @@ public class Ball extends GameObject {
     private static final float INITIAL_SPEED = 12f; // pixels per msec
     private static final Dimension DIMENSION = new Dimension(20, 20);
     private static final Vector OFFSET = new Vector(0, 420);
-    private float speed; // pixels/ms
+    float speed; // pixels/ms
     Vector direction;
     AffineTransform transform;
     BoundingRectangle ob;
@@ -32,6 +32,7 @@ public class Ball extends GameObject {
     Board board;
     Player lastBounce = Player.NONE;
     private PongoutSprite sprite;
+    boolean isBomb = false;
 
     Ball(Board board, Vector direction) {
         this.board = board;
@@ -41,7 +42,7 @@ public class Ball extends GameObject {
         speed = INITIAL_SPEED;
         this.direction = direction.normalize();
 
-        setDrawBoundary(true);
+        setDrawBoundary(false);
         setBoundaryColor(Color.rgb(0, 0, 255));
     }
 
@@ -115,12 +116,12 @@ public class Ball extends GameObject {
             transform.setTx(op.x - intersection.x);
             transform.setTy(op.y - intersection.y);
 
-            board.draw[4] = intersection.clone();
-
-            board.draw[2] = intersection.clone();
-            board.draw[3] = intersection.add(direction.scale(speed * 2));
-            board.draw[5] = intersection.clone();
-            board.draw[6] = intersection.add(normal.scale(speed));
+//            board.draw[4] = intersection.clone();
+//
+//            board.draw[2] = intersection.clone();
+//            board.draw[3] = intersection.add(direction.scale(speed * 2));
+//            board.draw[5] = intersection.clone();
+//            board.draw[6] = intersection.add(normal.scale(speed));
 
             return true;
         }
@@ -141,9 +142,8 @@ public class Ball extends GameObject {
         bounced = bounced || bounceLine(ro, rd, Paddle.CURVE);
         bounced = bounced || bounceLine(te, ro, Paddle.CURVE);
         bounced = bounced || bounceLine(rd, be, Paddle.CURVE);
-        log().info("bouncePaddle - last paddle is " + paddle.getName());
-        if (bounced) {
-            lastBounce = paddle.player;
+        if(bounced) {
+            lastBounce = paddle.player;                
         }
     }
 
@@ -221,6 +221,10 @@ public class Ball extends GameObject {
     }
 
     private boolean bounceBrick(Brick brick) {
+        
+        Vector oldDirection = direction;
+        AffineTransform oldTransform = transform;
+        
         BoundingRectangle r = brick.sprite.getWorldBound();
         boolean hitSomething = false;
         if (op.x > r.maxX()) {
@@ -233,6 +237,10 @@ public class Ball extends GameObject {
             hitSomething = hitSomething || bounceLine(new Vector(r.minX(), r.minY()), new Vector(r.maxX(), r.minY()), 1f);
         }
         if (hitSomething) {
+            if(isBomb) {
+                direction = oldDirection;
+                transform = oldTransform;
+            }
             brick.removeHitpoint();
             if (brick.isBroken()) {
                 board.removeBrick(brick);

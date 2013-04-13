@@ -2,8 +2,6 @@ package com.gameforge.gamejam.pongout.core;
 
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
-import playn.core.AssetWatcher;
-import playn.core.AssetWatcher.Listener;
 import playn.core.Game;
 import playn.core.Image;
 import playn.core.ImmediateLayer;
@@ -14,6 +12,7 @@ import com.gameforge.gamejam.pongout.core.play.ImageStore;
 import com.gameforge.gamejam.pongout.core.play.LoadingState;
 import com.gameforge.gamejam.pongout.core.play.PlayState;
 import com.gameforge.gamejam.pongout.core.play.ResultState;
+import com.gameforge.gamejam.pongout.core.play.StartState;
 
 public class PongOut implements Game {
     public static final int SCREENWIDTH = 1280;
@@ -33,6 +32,9 @@ public class PongOut implements Game {
                 "images/spritesheet.png");
         final Image player1WinsImage = assets().getImage("images/p1wins.jpg");
         final Image player2WinsImage = assets().getImage("images/p2wins.jpg");
+        final Image openingScreenImage = assets().getImage(
+                "images/openingscreen.jpg");
+
         graphics().rootLayer()
                 .add(graphics().createImageLayer(backgroundImage));
 
@@ -49,30 +51,28 @@ public class PongOut implements Game {
 
         renderer = new PlayNRenderer();
 
-        AssetWatcher assetWatcher = new AssetWatcher(new Listener() {
+        // AssetWatcher assetWatcher = new AssetWatcher(new Listener() {
+        //
+        // @Override
+        // public void done() {
+        // ImageStore.getInstance()
+        // .addImage("opening", openingScreenImage);
+        // changeState(STATE.LOADING);
+        // }
+        //
+        // @Override
+        // public void error(Throwable e) {
+        // }
+        //
+        // });
+        // assetWatcher.add(openingScreenImage);
+        // assetWatcher.start();
 
-            @Override
-            public void done() {
-                ImageStore.getInstance().addImage("spritesheet",
-                        spritesheetImage);
-                ImageStore.getInstance()
-                        .addImage("background", backgroundImage);
-                ImageStore.getInstance().addImage("player1wins",
-                        player1WinsImage);
-                ImageStore.getInstance().addImage("player2wins",
-                        player2WinsImage);
-                changeState(GameState.STATE.PLAY);
-            }
-
-            @Override
-            public void error(Throwable e) {
-            }
-
-        });
-        assetWatcher.add(backgroundImage);
-        assetWatcher.add(spritesheetImage);
-        assetWatcher.start();
-
+        ImageStore.getInstance().addImage("opening", openingScreenImage);
+        ImageStore.getInstance().addImage("spritesheet", spritesheetImage);
+        ImageStore.getInstance().addImage("background", backgroundImage);
+        ImageStore.getInstance().addImage("player1wins", player1WinsImage);
+        ImageStore.getInstance().addImage("player2wins", player2WinsImage);
         changeState(GameState.STATE.LOADING);
 
     }
@@ -90,6 +90,9 @@ public class PongOut implements Game {
             break;
         case LOADING:
             changeState(new LoadingState(renderer, this));
+            break;
+        case START:
+            changeState(new StartState(renderer, this));
             break;
         default:
             throw new IllegalArgumentException("unable to switch to "
