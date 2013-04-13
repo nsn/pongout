@@ -45,6 +45,53 @@ public class Ball extends GameObject {
         setBoundaryColor(Color.rgb(0, 0, 255));
     }
 
+    private boolean bouncePowerup(PowerUp powerup) {
+        BoundingRectangle r = powerup.sprite.getWorldBound();
+        boolean hitSomething = false;
+        if (op.x > r.maxX()) {
+            // log().info(String.format("right from brick %f,%f,%f,%f",
+            // r.maxX(), r.minY(), r.maxX(), r.maxY()));
+            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.maxX(),
+                    r.minY(), r.maxX(), r.maxY())) {
+                // log().info("hit brick from right");
+                direction.x *= -1;
+                transform.setTx(ob.minX() - r.x);
+                hitSomething = true;
+            }
+        } else if (op.y > r.maxY()) {
+            // log().info("bottom from brick");
+            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(),
+                    r.maxY(), r.maxX(), r.maxY())) {
+                // log().info("hit brick from bottom");
+                direction.y *= -1;
+                transform.setTy(ob.minY() - r.y);
+                hitSomething = true;
+            }
+        } else if (op.x < r.minX()) {
+            // log().info("left from brick");
+            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(),
+                    r.minY(), r.minX(), r.maxY())) {
+                // log().info("hit brick from left");
+                direction.x *= -1;
+                transform.setTx(r.x - ob.maxX());
+                hitSomething = true;
+            }
+        } else if (op.y < r.minY()) {
+            // log().info("top from brick");
+            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(),
+                    r.minY(), r.maxX(), r.minY())) {
+                // log().info("hit brick from top");
+                direction.y *= -1;
+                transform.setTy(r.y - ob.maxY());
+                hitSomething = true;
+            }
+        }
+        if (hitSomething) {
+            board.collectPowerup(powerup, this);
+        }
+        return hitSomething;
+    }
+
     private boolean bounceLine(Vector s, Vector e, float friction,
             Vector velocity, float curve) {
         if (Lines.linesIntersect(op.x, op.y, np.x, np.y, s.x, s.y, e.x, e.y)) {
@@ -145,6 +192,13 @@ public class Ball extends GameObject {
                 .hasNext();) {
             Brick brick = (Brick) it.next();
             if (bounceBrick(brick)) {
+                break;
+            }
+        }
+
+        // powerups
+        for (PowerUp powerUp : board.powerUps) {
+            if (bouncePowerup(powerUp)) {
                 break;
             }
         }

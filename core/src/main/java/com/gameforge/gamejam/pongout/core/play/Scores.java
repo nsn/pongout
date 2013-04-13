@@ -6,7 +6,6 @@ package com.gameforge.gamejam.pongout.core.play;
 
 import com.gameforge.gamejam.pongout.core.PongoutSprite;
 import com.nightspawn.sg.GroupNode;
-import com.nightspawn.sg.Node;
 import com.nightspawn.sg.Spatial;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ public class Scores extends GroupNode<Spatial> {
     public static final int PLAYER1_POINTS_OFFSET = 100;
     public static final int PLAYER2_POINTS_OFFSET = 1000;
     private static final int SPRITESHEET_OFFSET = 440;
-    private static final int MAX_HP = 5;
+    private static final int MAX_HP = 1;
     public static final int WIDTH = 30;
     public static final int HEIGHT = 45;
     

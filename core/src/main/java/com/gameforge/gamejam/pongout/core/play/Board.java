@@ -1,5 +1,6 @@
 package com.gameforge.gamejam.pongout.core.play;
 
+import static com.gameforge.gamejam.pongout.core.play.Player.PLAYER1;
 import static playn.core.PlayN.log;
 
 import java.util.ArrayList;
@@ -18,10 +19,13 @@ public class Board extends GroupNode<Node> {
     public static final float BOTTOM = OFFSET.y + DIMENSION.height;
     public static final float LEFT = OFFSET.x;
     public static final float RIGHT = OFFSET.x + DIMENSION.width;
+    public static final int POWERUP_DROPCHANCE = 125;
     private ArrayList<Ball> balls;
     private ArrayList<Ball> ballsToRemove;
+    private ArrayList<Ball> ballsToSpawn;
     private ArrayList<Brick> bricksToRemove;
-    private ArrayList<PowerUp> powerUps;
+    private ArrayList<PowerUp> powerUpsToRemove;
+    ArrayList<PowerUp> powerUps;
 
     Vector[] draw = { new Vector(), new Vector(), new Vector(), new Vector(),
             new Vector(), new Vector(), new Vector() };
@@ -35,10 +39,12 @@ public class Board extends GroupNode<Node> {
         setTranslation(OFFSET);
         balls = new ArrayList<Ball>();
         ballsToRemove = new ArrayList<Ball>();
+        ballsToSpawn = new ArrayList<Ball>();
         bricksToRemove = new ArrayList<Brick>();
+        powerUpsToRemove = new ArrayList<PowerUp>();
         powerUps = new ArrayList<PowerUp>();
 
-        setDrawBoundary(true);
+        setDrawBoundary(false);
         setBoundaryColor(Color.blue(255));
         player1Paddle = new Paddle(player1Input, 0, Player.PLAYER1);
         player1Paddle.translate(new Vector(100, 100));
@@ -56,26 +62,21 @@ public class Board extends GroupNode<Node> {
 
     }
 
-    public void spawnBall() {
-        Random rand = new Random();
+    public void spawnBall(Vector position) {
         // direction
-        Vector dir = new Vector(-0.1f, 0.0f);
-        // dir = new Vector(1.0f, 2.0f);
-        // dir = new Vector(0.1f, 0.0f);
+        Random rand = new Random();
+        Vector dir = new Vector(-0.1f, rand.nextFloat() - 0.5f);
         Ball b = new Ball(this, dir);
 
-        // position
-        Vector pos = new Vector(320, 138);
-        // pos = new Vector(320, 228);
-        // pos = new Vector(320, 183);
-        // pos = new Vector(320, 210);
-        // pos = new Vector(920, 233);
-        pos = new Vector(920, 143);
-        // pos = new Vector(920, 163);
-
-        b.setTranslation(pos);
+        b.setTranslation(position);
         balls.add(b);
         addChild(b);
+
+    }
+
+    public void spawnBall() {
+        Vector pos = new Vector(800, 100);
+        spawnBall(pos);
     }
 
     public void removeBall(Ball b) {
@@ -86,12 +87,48 @@ public class Board extends GroupNode<Node> {
         bricksToRemove.add(b);
     }
 
+    public void collectPowerup(PowerUp p, Ball b) {
+        log().info("collection powerup");
+        powerUpsToRemove.add(p);
+        Paddle lastActivePaddle = null;
+        if (b.lastBounce != Player.NONE) {
+            lastActivePaddle = b.lastBounce == PLAYER1 ? player1Paddle
+                    : player2Paddle;
+        }
+        switch (p.getType()) {
+        case ENLARGE:
+            if (lastActivePaddle != null) {
+                lastActivePaddle.increaseSize();
+                lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.ENLARGE);
+            }
+            break;
+        case MULTIBALL:
+            ballsToSpawn.add(b);
+            if (lastActivePaddle != null) {
+                lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.MULTIBALL);
+            }
+            break;
+        case SPEED:
+            if (lastActivePaddle != null) {
+                lastActivePaddle.setSpeed(1.5f);
+                lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.SPEED);
+            }
+            break;
+        }
+
+    }
+
     @Override
     public void update(float deltams) {
         // spawn ball if there are no balls left
         if (balls.isEmpty()) {
             spawnBall();
         }
+        for (Ball ball : ballsToSpawn) {
+            spawnBall(ball.getWorldPosition());
+            spawnBall(ball.getWorldPosition());
+        }
+        ballsToSpawn.clear();
         for (Ball ball : ballsToRemove) {
             balls.remove(ball);
             getChildren().remove(ball);
@@ -100,11 +137,18 @@ public class Board extends GroupNode<Node> {
         for (Brick brick : bricksToRemove) {
             log().info("removing brick...");
             brickLayout.getChildren().remove(brick);
-            PowerUp pu = RandomPowerUpGenerator.generate(brick);
-            powerUps.add(pu);
-            addChild(pu);
+            int roll = new Random().nextInt(100);
+            if (roll < POWERUP_DROPCHANCE) {
+                PowerUp pu = RandomPowerUpGenerator.generate(brick);
+                powerUps.add(pu);
+                addChild(pu);
+            }
         }
         bricksToRemove.clear();
+        for (PowerUp powerUp : powerUpsToRemove) {
+            powerUps.remove(powerUp);
+            getChildren().remove(powerUp);
+        }
         super.update(deltams);
     }
 

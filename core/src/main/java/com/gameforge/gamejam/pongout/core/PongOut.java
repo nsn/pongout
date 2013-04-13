@@ -21,6 +21,7 @@ public class PongOut implements Game {
 	private GameState currentState;
 	private PlayNRenderer renderer;
 	private float frameAlpha = 1.0f;
+    private int lastWinner = 0;
 
 	@Override
 	public void init() {
@@ -30,6 +31,10 @@ public class PongOut implements Game {
 				.getImage("images/background.jpg");
 		final Image spritesheetImage = assets().getImage(
 				"images/spritesheet.png");
+        final Image player1WinsImage = assets().getImage(
+                "images/p1wins.jpg");
+        final Image player2WinsImage = assets().getImage(
+                "images/p2wins.jpg");
 		graphics().rootLayer()
 				.add(graphics().createImageLayer(backgroundImage));
 
@@ -53,7 +58,12 @@ public class PongOut implements Game {
 				ImageStore.getInstance().addImage("spritesheet",
 						spritesheetImage);
 				ImageStore.getInstance()
-						.addImage("background", backgroundImage);
+						.addImage("background", 
+                        backgroundImage);
+                ImageStore.getInstance()
+                        .addImage("player1wins", player1WinsImage);
+                ImageStore.getInstance()
+                        .addImage("player2wins", player2WinsImage);
 				changeState(GameState.STATE.PLAY);
 			}
 
@@ -71,12 +81,15 @@ public class PongOut implements Game {
 	}
 
 	public void changeState(GameState.STATE newState) {
+		if (currentState != null) {
+			currentState.onExit();
+		}
 		switch (newState) {
 		case PLAY:
 			changeState(new PlayState(renderer, this));
 			break;
 		case RESULT:
-			changeState(new ResultState(renderer, this));
+			changeState(new ResultState(renderer, this, lastWinner));
 			break;
 		case LOADING:
 			changeState(new LoadingState(renderer, this));
@@ -88,9 +101,6 @@ public class PongOut implements Game {
 	}
 
 	private void changeState(GameState state) {
-		if (currentState != null) {
-			currentState.onExit();
-		}
 		currentState = state;
 		currentState.onEntry();
 	}
@@ -109,4 +119,13 @@ public class PongOut implements Game {
 	public int updateRate() {
 		return 0;
 	}
+
+    public int getLastWinner() {
+        return lastWinner;
+    }
+
+    public void setLastWinner(int lastWinner) {
+        this.lastWinner = lastWinner;
+    }
+    
 }

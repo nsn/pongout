@@ -62,6 +62,12 @@ public class PlayState extends GameState {
     @Override
     public void onExit() {
         log().info("PlayState exit");
+        if (board.scores.player1Points.size() > board.scores.player2Points
+                .size()) {
+            pongOut.setLastWinner(1);
+        } else {
+            pongOut.setLastWinner(2);
+        }
     }
 
     @Override
@@ -74,7 +80,6 @@ public class PlayState extends GameState {
         renderRay(surface, board.draw[2], board.draw[3], Color.rgb(0, 255, 0));
         surface.setFillColor(Color.rgb(255, 255, 255));
         surface.fillRect(board.draw[4].x - 1, board.draw[4].y - 1, 3, 3);
-        renderRay(surface, board.draw[5], board.draw[6], Color.rgb(255, 0, 255));
     }
 
     private void renderRay(Surface surface, Vector p1, Vector p2, int color) {
