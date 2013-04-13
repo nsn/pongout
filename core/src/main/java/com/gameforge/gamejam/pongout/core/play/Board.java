@@ -49,10 +49,12 @@ public class Board extends GroupNode<Node> {
         setBoundaryColor(Color.blue(255));
         player1Paddle = new Paddle(player1Input, 0, Player.PLAYER1);
         player1Paddle.translate(new Vector(100, 100));
+        player1Paddle.setName("player1");
         addChild(player1Paddle);
 
         player2Paddle = new Paddle(player2Input, 1, Player.PLAYER2);
         player2Paddle.translate(new Vector(1150, 100));
+        player2Paddle.setName("player2");
         addChild(player2Paddle);
 
         scores = new Scores();
@@ -92,11 +94,12 @@ public class Board extends GroupNode<Node> {
         log().info("collection powerup");
         powerUpsToRemove.add(p);
         Paddle lastActivePaddle = null;
-        log().info("last bounce is " + b.lastBounce.name());
         if (b.lastBounce != Player.NONE) {
-            lastActivePaddle = b.lastBounce == PLAYER1 ? player1Paddle
+            lastActivePaddle = b.lastBounce.equals(PLAYER1) ? player1Paddle
                     : player2Paddle;
         }
+        log().info("last bounce is " + b.lastBounce.name());
+        log().info("last active paddle is " + lastActivePaddle.getName());
         switch (p.getType()) {
         case ENLARGE:
             if (lastActivePaddle != null) {

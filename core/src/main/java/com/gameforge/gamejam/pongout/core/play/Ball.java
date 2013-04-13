@@ -137,11 +137,14 @@ public class Ball extends GameObject {
                 + (Paddle.PADDLE_WIDTH * .5f));
         Vector te = new Vector(ro.x + (Paddle.PADDLE_WIDTH * .5f * ed), ro.y
                 - (Paddle.PADDLE_WIDTH * .5f));
-
-        bounceLine(ro, rd, Paddle.CURVE);
-        bounceLine(te, ro, Paddle.CURVE);
-        bounceLine(rd, be, Paddle.CURVE);
-
+        boolean bounced = false;
+        bounced = bounced || bounceLine(ro, rd, Paddle.CURVE);
+        bounced = bounced || bounceLine(te, ro, Paddle.CURVE);
+        bounced = bounced || bounceLine(rd, be, Paddle.CURVE);
+        log().info("bouncePaddle - last paddle is " + paddle.getName());
+        if(bounced) {
+            lastBounce = paddle.player;                
+        }
     }
 
     public void update(float delta) {
