@@ -11,6 +11,7 @@ import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Scene;
 import com.nightspawn.sg.Spatial;
 import playn.core.Color;
+import playn.core.ImageLayer;
 import playn.core.Surface;
 import pythagoras.f.Rectangle;
 import static playn.core.PlayN.*;
@@ -25,16 +26,16 @@ public class ResultState extends GameState {
     private final Scene scene;
     private Result result;
     
-    public ResultState(PlayNRenderer renderer, PongOut pongOut) {
+    public ResultState(PlayNRenderer renderer, PongOut pongOut, int winner) {
         super(GameState.STATE.RESULT, renderer, pongOut);
-        
+        log().info("winner is " + winner);
         resultInput = new ResultInput();
         keyboard().setListener(resultInput);
 		// init scene
 		GroupNode<Spatial> root = new GroupNode<Spatial>();
 
 		// init board
-		result = new Result();
+		result = new Result(winner);
 		root.addChild(result);
 
 		scene = new Scene(root);        
@@ -52,13 +53,14 @@ public class ResultState extends GameState {
 
     @Override
     public void paint(Surface surface, Rectangle renderRect, float alpha) {
-        surface.setFillColor(Color.rgb(100, 0, 0));
-        surface.fillRect(0, 0, 1280, 730);
+        //surface.setFillColor(Color.rgb(0, 0, 0));
+        //surface.fillRect(0, 0, 1280, 730);
         renderer.render(scene, renderRect, surface, alpha);
     }
 
     @Override
     public void update(float delta) {
+        scene.update(delta);
         if(resultInput.newGame) {
             pongOut.changeState(GameState.STATE.PLAY);
         }

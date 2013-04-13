@@ -62,6 +62,11 @@ public class PlayState extends GameState {
 	@Override
 	public void onExit() {
 		log().info("PlayState exit");
+        if(board.scores.player1Points.size() > board.scores.player2Points.size()) {
+            pongOut.setLastWinner(1);        
+        } else {
+            pongOut.setLastWinner(2);        
+        }
 	}
 
 	@Override
