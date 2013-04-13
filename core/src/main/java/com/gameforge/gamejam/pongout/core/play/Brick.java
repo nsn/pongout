@@ -18,8 +18,8 @@ public class Brick extends GroupNode<Spatial> {
     
     private int hitpoints;
     PongoutSprite sprite;
-    private static final int BRICK_HORIZONTAL_SPACING = 10;
-    private static final int BRICK_VERTICAL_SPACING = 10;
+    private static final int BRICK_HORIZONTAL_SPACING = 1;
+    private static final int BRICK_VERTICAL_SPACING = 1;
     private static final int BRICK_HEIGHT = 60;
     private static final int BRICK_WIDTH = 30;
     private static final int BRICK_OFFSET = 485;

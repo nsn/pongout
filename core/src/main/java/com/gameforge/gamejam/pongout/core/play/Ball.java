@@ -134,6 +134,7 @@ public class Ball extends GameObject {
         Vector ro = new Vector(r.minX() + xOffset, r.minY());
         Vector rd = new Vector(r.minX() + xOffset, r.maxY());
         bounceLine(ro, rd, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
+        lastBounce = paddle.player;
     }
 
     private void bouncePaddleOld(Paddle paddle, boolean left) {

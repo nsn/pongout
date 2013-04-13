@@ -21,6 +21,7 @@ public class Board extends GroupNode<Node> {
     public static final int POWERUP_DROPCHANCE = 125;
 	private ArrayList<Ball> balls;
 	private ArrayList<Ball> ballsToRemove;
+    private ArrayList<Ball> ballsToSpawn;
     private ArrayList<Brick> bricksToRemove;
     private ArrayList<PowerUp> powerUpsToRemove;
     ArrayList<PowerUp> powerUps;
@@ -37,6 +38,7 @@ public class Board extends GroupNode<Node> {
         setTranslation(OFFSET);
         balls = new ArrayList<Ball>();
         ballsToRemove = new ArrayList<Ball>();
+        ballsToSpawn = new ArrayList<Ball>();
         bricksToRemove = new ArrayList<Brick>();
         powerUpsToRemove = new ArrayList<PowerUp>();
         powerUps = new ArrayList<PowerUp>();
@@ -61,20 +63,20 @@ public class Board extends GroupNode<Node> {
 	}
 
     public void spawnBall(Vector position) {
+		// direction
+		Random rand = new Random();
+		Vector dir = new Vector(-0.1f, rand.nextFloat()-0.5f);
+		Ball b = new Ball(this, dir);
+
+		b.setTranslation(position);
+		balls.add(b);
+		addChild(b);
         
     }
     
 	public void spawnBall() {
-		Random rand = new Random();
-		// direction
-		Vector dir = new Vector(-0.1f, rand.nextFloat()-0.5f);
-		// position
 		Vector pos = new Vector(800, 100);
-		Ball b = new Ball(this, dir);
-
-		b.setTranslation(pos);
-		balls.add(b);
-		addChild(b);
+        spawnBall(pos);
 	}
 
 	public void removeBall(Ball b) {
@@ -93,11 +95,16 @@ public class Board extends GroupNode<Node> {
                 switch(b.lastBounce) {
                     case PLAYER1:
                         player1Paddle.increaseSize();
+                        player1Paddle.setFrame(6);
                         break;
                     case PLAYER2:
                         player2Paddle.increaseSize();
+                        player2Paddle.setFrame(6);
                         break;
                 }
+                break;
+            case MULTIBALL:
+                ballsToSpawn.add(b);
                 break;
         }
     }
@@ -108,6 +115,11 @@ public class Board extends GroupNode<Node> {
         if (balls.isEmpty()) {
             spawnBall();
         }
+        for (Ball ball : ballsToSpawn) {
+            spawnBall(ball.getWorldPosition());
+            spawnBall(ball.getWorldPosition());
+        }
+        ballsToSpawn.clear();
         for (Ball ball : ballsToRemove) {
             balls.remove(ball);
             getChildren().remove(ball);
