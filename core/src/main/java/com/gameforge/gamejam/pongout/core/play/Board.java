@@ -20,6 +20,7 @@ public class Board extends GroupNode<Node> {
 	Vector[] draw = { new Vector(), new Vector(), new Vector() };
 	Paddle player1Paddle;
 	Paddle player2Paddle;
+    private Scores scores;
 
 	public Board(UserInput player1Input, UserInput player2Input) {
 		setTranslation(OFFSET);
@@ -34,6 +35,9 @@ public class Board extends GroupNode<Node> {
 		player2Paddle = new Paddle(player2Input, 1);
 		player2Paddle.translate(new Vector(1150, 100));
 		addChild(player2Paddle);
+        
+        scores = new Scores();
+        addChild(scores);
 	}
 
 	public void spawnBall() {
