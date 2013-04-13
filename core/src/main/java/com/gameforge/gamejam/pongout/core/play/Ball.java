@@ -8,6 +8,7 @@ import playn.core.Color;
 import pythagoras.f.AffineTransform;
 import pythagoras.f.Dimension;
 import pythagoras.f.Lines;
+import pythagoras.f.MathUtil;
 import pythagoras.f.Point;
 import pythagoras.f.Ray2;
 import pythagoras.f.Rectangle;
@@ -48,18 +49,43 @@ public class Ball extends GameObject {
             Vector velocity, float curve) {
         if (Lines.linesIntersect(op.x, op.y, np.x, np.y, s.x, s.y, e.x, e.y)) {
             log().debug("intersect");
+            // intersection
             Ray2 movement = new Ray2(op, np.subtract(op).normalize());
             Vector intersection = new Vector();
             if (!movement.getIntersection(s, e, intersection))
                 return;
 
-            direction = direction.cross(e.subtract(s)).normalize();
+            // direction
+            Vector normal = new Vector((s.y - e.y) * -1, s.x - e.x).normalize();
+            float dot = normal.dot(direction);
+            Vector diff = normal.scale(2 * dot);
+
+            // flat panel
+            direction = direction.subtract(diff).normalize();
+            // curve
+            float ratio = s.distance(intersection) / s.distance(e) * 2.0f - 1;
+            direction.y += curve * ratio;
+
+            // float intersectY = np.y - ro.y;
+            // float ratio = intersectY / (r.height * .5f) - 1;
+            // direction.y += Paddle.CURVE * ratio;
+
+            // float dist = intersection.distance(op);
+            // log().info("distance " + dist);
+            // if (dist > 0.0f) {
+            // direction.scaleLocal(-1);
+            // }
+
             transform.setTx(op.x - intersection.x);
             transform.setTy(op.y - intersection.y);
 
             board.draw[4] = intersection.clone();
-            // board.draw[2] = s.clone();
-            // board.draw[3] = e.clone();
+
+            board.draw[2] = intersection.clone();
+            board.draw[3] = intersection.add(direction.scale(speed * 2));
+            board.draw[5] = intersection.clone();
+            board.draw[6] = intersection.add(normal.scale(speed));
+
         }
 
     }
@@ -72,11 +98,15 @@ public class Ball extends GameObject {
         float ed = left ? -1 : 1;
         Vector be = new Vector(rd.x + (Paddle.PADDLE_WIDTH * .5f * ed), rd.y
                 + (Paddle.PADDLE_WIDTH * .5f));
+        Vector te = new Vector(ro.x + (Paddle.PADDLE_WIDTH * .5f * ed), ro.y
+                - (Paddle.PADDLE_WIDTH * .5f));
+
         bounceLine(ro, rd, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
+        bounceLine(te, ro, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
         bounceLine(rd, be, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
         if (paddle.player == Player.PLAYER1) {
-            board.draw[2] = rd.clone();
-            board.draw[3] = be.clone();
+            board.draw[2] = ro.clone();
+            board.draw[3] = te.clone();
         }
 
     }
@@ -177,6 +207,10 @@ public class Ball extends GameObject {
         // board.draw[4] = intersection.clone();
 
         transform(transform);
+        if (MathUtil.epsilonEquals(direction.x, 0.0f)) {
+            direction.x += 0.001f;
+            direction.negateLocal();
+        }
 
         super.update(delta);
     }
