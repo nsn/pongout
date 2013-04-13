@@ -96,6 +96,7 @@ public class Board extends GroupNode<Node> {
         log().info("collection powerup");
         powerUpsToRemove.add(p);
         Paddle lastActivePaddle = null;
+        log().info("last bounce is " + b.lastBounce.name());
         if(b.lastBounce != Player.NONE) {
             lastActivePaddle = b.lastBounce==PLAYER1?player1Paddle:player2Paddle;
         }
