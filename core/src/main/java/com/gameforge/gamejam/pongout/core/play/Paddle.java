@@ -31,8 +31,10 @@ public class Paddle extends GroupNode<Spatial> {
 	private UserInput userInput;
 	Vector velocity = new Vector();
 	private int frameModifier;
+	Player player;
 
-	Paddle(UserInput input, int frameModifier) {
+	Paddle(UserInput input, int frameModifier, Player p) {
+		this.player = p;
 		this.frameModifier = frameModifier;
 		top = PongoutSprite.create(PADDLE_WIDTH, TOP_HEIGHT, 0, TOP_OFFSET);
 		top.setDrawBoundary(false);

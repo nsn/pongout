@@ -24,6 +24,7 @@ public class Ball extends GameObject {
 	Vector op;
 	Vector np;
 	Board board;
+	Player lastBounce = Player.NONE;
 	private PongoutSprite sprite;
 
 	Ball(Board board, Vector direction) {
@@ -52,7 +53,6 @@ public class Ball extends GameObject {
 			} else {
 				newX = r.x - ob.maxX();
 			}
-			log().info("asdasd " + newX);
 			transform.setTx(newX);
 
 			// flat paddle
@@ -65,6 +65,8 @@ public class Ball extends GameObject {
 			direction.y += Paddle.CURVE * ratio;
 
 			direction.normalizeLocal();
+
+			lastBounce = paddle.player;
 
 			board.draw[2] = ro.clone();
 			board.draw[3] = rd.clone();
