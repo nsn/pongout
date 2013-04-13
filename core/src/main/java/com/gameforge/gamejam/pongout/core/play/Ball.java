@@ -22,7 +22,7 @@ public class Ball extends GameObject {
     private static final float INITIAL_SPEED = 12f; // pixels per msec
     private static final Dimension DIMENSION = new Dimension(20, 20);
     private static final Vector OFFSET = new Vector(0, 420);
-    private float speed; // pixels/ms
+    float speed; // pixels/ms
     Vector direction;
     AffineTransform transform;
     BoundingRectangle ob;
@@ -141,7 +141,7 @@ public class Ball extends GameObject {
         bounced = bounced || bounceLine(ro, rd, Paddle.CURVE);
         bounced = bounced || bounceLine(te, ro, Paddle.CURVE);
         bounced = bounced || bounceLine(rd, be, Paddle.CURVE);
-        log().info("bouncePaddle - last paddle is " + paddle.getName());
+        //log().info("bouncePaddle - last paddle is " + paddle.getName());
         if(bounced) {
             lastBounce = paddle.player;                
         }

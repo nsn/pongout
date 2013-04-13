@@ -10,8 +10,6 @@ import com.gameforge.gamejam.pongout.core.PongOut;
 import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Scene;
 import com.nightspawn.sg.Spatial;
-import playn.core.Color;
-import playn.core.ImageLayer;
 import playn.core.Surface;
 import pythagoras.f.Rectangle;
 import static playn.core.PlayN.*;

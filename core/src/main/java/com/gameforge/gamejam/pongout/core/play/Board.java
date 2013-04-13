@@ -35,6 +35,7 @@ public class Board extends GroupNode<Node> {
     Scores scores;
     BrickLayout brickLayout;
     boolean gameOver;
+    private boolean increaseBallSpeed = false;
 
     public Board(UserInput player1Input, UserInput player2Input) {
         setTranslation(OFFSET);
@@ -125,6 +126,12 @@ public class Board extends GroupNode<Node> {
                 lastActivePaddle.getUserInput().switchKeys();
                 lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.CONTROLS);
             }
+            break;
+        case BALLSPEED:
+            if(lastActivePaddle != null) {
+                lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.BALLSPEED);
+            }
+            increaseBallSpeed = true;
         }
 
     }
@@ -154,6 +161,12 @@ public class Board extends GroupNode<Node> {
                 powerUps.add(pu);
                 addChild(pu);
             }
+        }
+        if(increaseBallSpeed) {
+            for (Ball ball : balls) {
+                ball.speed *= 1.5;
+            }   
+            increaseBallSpeed = false;
         }
         bricksToRemove.clear();
         for (PowerUp powerUp : powerUpsToRemove) {
