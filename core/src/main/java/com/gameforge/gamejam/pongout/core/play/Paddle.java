@@ -70,6 +70,16 @@ public class Paddle extends GroupNode<Spatial> {
 		addChild(middle);
 	}
 
+	public void setSpeed(float speed) {
+		setSpeed(speed);
+	}
+
+	public void setFrame(int frame) {
+		top.setFrame(frame + frameModifier);
+		middle.setFrame(frame + frameModifier);
+		bottom.setFrame(frame + frameModifier);
+	}
+
 	@Override
 	public void update(float deltams) {
 		super.update(deltams);
@@ -84,9 +94,4 @@ public class Paddle extends GroupNode<Spatial> {
 		}
 	}
 
-	public void setFrame(int frame) {
-		top.setFrame(frame + frameModifier);
-		middle.setFrame(frame + frameModifier);
-		bottom.setFrame(frame + frameModifier);
-	}
 }

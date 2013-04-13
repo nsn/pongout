@@ -73,10 +73,11 @@ public class Board extends GroupNode<Node> {
 		if (balls.isEmpty()) {
 			spawnBall();
 		}
-		if (!ballsToRemove.isEmpty()) {
-			balls.removeAll(ballsToRemove);
-			ballsToRemove = new ArrayList<Ball>();
-		}
+        for (Ball ball : ballsToRemove) {
+            balls.remove(ball);
+            getChildren().remove(ball);
+        }
+        ballsToRemove.clear();
 		super.update(deltams);
 	}
 

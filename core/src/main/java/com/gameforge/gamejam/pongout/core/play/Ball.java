@@ -77,6 +77,20 @@ public class Ball extends GameObject {
 		op = new Vector(ob.center().x, ob.center().y);
 		np = new Vector(nb.center().x, nb.center().y);
 
+        log().info("LEFT " + np.x);
+		// leaves play area
+		if (op.x < Board.LEFT) {
+			log().info("LEFT " + np.x);
+			board.removeBall(this);
+			board.scores.removePointForPlayer1();
+			return;
+		}
+		if (op.x > Board.RIGHT) {
+			board.removeBall(this);
+			board.scores.removePointForPlayer2();
+			return;
+		}
+        
 		// hit upper or lower bounds
 		if (nb.minY() <= Board.OFFSET.y) {
 			float newY = ob.minY() - Board.OFFSET.y;
@@ -87,17 +101,6 @@ public class Ball extends GameObject {
 			float newY = nb.maxY() - Board.BOTTOM;
 			transform.setTy(newY);
 			direction.y *= -1;
-		}
-		// leaves play area
-		if (np.x < Board.LEFT) {
-			// board.removeBall(this);
-			// board.scores.removePointForPlayer1();
-			// return;
-		}
-		if (np.x > Board.RIGHT) {
-			// board.removeBall(this);
-			// board.scores.removePointForPlayer2();
-			// return;
 		}
 
 		// player paddles
