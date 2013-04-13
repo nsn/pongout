@@ -63,6 +63,8 @@ public class Board extends GroupNode<Node> {
         brickLayout = new BrickLayout();
         addChild(brickLayout);
 
+        setBoundaryColor(Color.rgb(255, 0, 255));
+        setDrawBoundary(true);
     }
 
     public void spawnBall(Vector position) {
@@ -99,7 +101,6 @@ public class Board extends GroupNode<Node> {
                     : player2Paddle;
         }
         log().info("last bounce is " + b.lastBounce.name());
-        log().info("last active paddle is " + lastActivePaddle.getName());
         switch (p.getType()) {
         case ENLARGE:
             if (lastActivePaddle != null) {
