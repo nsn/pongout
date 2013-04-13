@@ -96,8 +96,6 @@ public class Board extends GroupNode<Node> {
         if(b.lastBounce != Player.NONE) {
             lastActivePaddle = b.lastBounce.equals(PLAYER1)?player1Paddle:player2Paddle;
         }
-        log().info("last bounce is " + b.lastBounce.name());
-        log().info("last active paddle is " + lastActivePaddle.getName());
         switch (p.getType()) {
         case ENLARGE:
             if (lastActivePaddle != null) {
