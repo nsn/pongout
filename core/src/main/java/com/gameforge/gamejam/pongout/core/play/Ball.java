@@ -10,111 +10,156 @@ import pythagoras.f.Vector;
 
 import com.gameforge.gamejam.pongout.core.PongoutSprite;
 import com.nightspawn.sg.BoundingRectangle;
+import com.nightspawn.sg.Spatial;
+import java.util.Iterator;
+import pythagoras.f.Line;
 
 public class Ball extends GameObject {
-	private static final float INITIAL_SPEED = 12f; // pixels per msec
-	private static final Dimension DIMENSION = new Dimension(20, 20);
-	private static final Vector OFFSET = new Vector(0, 420);
-	private float speed; // pixels/ms
-	Vector direction;
-	AffineTransform transform;
-	BoundingRectangle ob;
-	BoundingRectangle nb;
-	Vector op;
-	Vector np;
-	Board board;
-	private PongoutSprite sprite;
 
-	Ball(Board board, Vector direction) {
-		this.board = board;
-		sprite = new PongoutSprite(DIMENSION, OFFSET);
-		addChild(sprite);
+    private static final float INITIAL_SPEED = 12f; // pixels per msec
+    private static final Dimension DIMENSION = new Dimension(20, 20);
+    private static final Vector OFFSET = new Vector(0, 420);
+    private float speed; // pixels/ms
+    Vector direction;
+    AffineTransform transform;
+    BoundingRectangle ob;
+    BoundingRectangle nb;
+    Vector op;
+    Vector np;
+    Board board;
+    private PongoutSprite sprite;
 
-		speed = INITIAL_SPEED;
-		this.direction = direction.normalize();
+    Ball(Board board, Vector direction) {
+        this.board = board;
+        sprite = new PongoutSprite(DIMENSION, OFFSET);
+        addChild(sprite);
 
-		setDrawBoundary(true);
-		setBoundaryColor(Color.rgb(0, 0, 255));
-	}
+        speed = INITIAL_SPEED;
+        this.direction = direction.normalize();
 
-	private void bouncePaddle(Paddle paddle, boolean left) {
-		BoundingRectangle r = paddle.getWorldBound();
-		float xOffset = left ? r.width : 0.0f;
-		Vector ro = new Vector(r.minX() + xOffset, r.minY());
-		Vector rd = new Vector(r.minX() + xOffset, r.maxY());
+        setDrawBoundary(true);
+        setBoundaryColor(Color.rgb(0, 0, 255));
+    }
 
-		if (Lines
-				.linesIntersect(op.x, op.y, np.x, np.y, ro.x, ro.y, rd.x, rd.y)) {
-			float newX;
-			if (left) {
-				newX = ob.minX() - r.x;
-			} else {
-				newX = r.x - ob.maxX();
-			}
-			log().info("asdasd " + newX);
-			transform.setTx(newX);
-			direction.x *= -1;
-			board.draw[2] = ro.clone();
-			board.draw[3] = rd.clone();
-		}
+    private void bounceBrick(Brick brick) {
+        BoundingRectangle r = brick.sprite.getWorldBound();
+        boolean hitSomething = false;
+        if (op.x > r.maxX()) {
+            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.maxX(), r.minY(), r.maxX(), r.maxY())) {
+                direction.x *= -1;
+                transform.setTx(ob.minX() - r.x);
+                hitSomething = true;
+            }
+        } else if (op.y > r.maxY()) {
+            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(), r.maxY(), r.maxX(), r.maxY())) {
+                direction.x *= -1;
+                transform.setTx(ob.minY() - r.y);
+                hitSomething = true;
+            }
+        } else if (op.x < r.minX()) {
+            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(), r.minY(), r.minX(), r.maxY())) {
+                direction.x *= -1;
+                transform.setTx(r.x - ob.maxX());
+                hitSomething = true;
+            }
+        } else if (op.y < r.minY()) {
+            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(), r.minY(), r.maxX(), r.maxY())) {
+                direction.x *= -1;
+                transform.setTx(r.y - ob.maxY());
+                hitSomething = true;
+            }
+        }
+        if (hitSomething) {
+            brick.removeHitpoint();
+            if (brick.isBroken()) {
+                board.removeBrick(brick);
+            }
+        }
+    }
 
-	}
+    private void bouncePaddle(Paddle paddle, boolean left) {
+        BoundingRectangle r = paddle.getWorldBound();
+        float xOffset = left ? r.width : 0.0f;
+        Vector ro = new Vector(r.minX() + xOffset, r.minY());
+        Vector rd = new Vector(r.minX() + xOffset, r.maxY());
 
-	public void update(float delta) {
-		oldBoundingRectangle = getWorldBound().clone();
+        if (Lines
+                .linesIntersect(op.x, op.y, np.x, np.y, ro.x, ro.y, rd.x, rd.y)) {
+            float newX;
+            if (left) {
+                newX = ob.minX() - r.x;
+            } else {
+                newX = r.x - ob.maxX();
+            }
+            log().info("asdasd " + newX);
+            transform.setTx(newX);
+            direction.x *= -1;
+            board.draw[2] = ro.clone();
+            board.draw[3] = rd.clone();
+        }
 
-		Vector dist = direction.scale(speed);
-		transform = new AffineTransform();
-		transform.translate(dist.x, dist.y);
+    }
 
-		ob = oldBoundingRectangle;
-		nb = getWorldBound().translate(transform);
+    public void update(float delta) {
+        oldBoundingRectangle = getWorldBound().clone();
 
-		op = new Vector(ob.center().x, ob.center().y);
-		np = new Vector(nb.center().x, nb.center().y);
+        Vector dist = direction.scale(speed);
+        transform = new AffineTransform();
+        transform.translate(dist.x, dist.y);
+
+        ob = oldBoundingRectangle;
+        nb = getWorldBound().translate(transform);
+
+        op = new Vector(ob.center().x, ob.center().y);
+        np = new Vector(nb.center().x, nb.center().y);
 
         log().info("LEFT " + np.x);
-		// leaves play area
-		if (op.x < Board.LEFT) {
-			log().info("LEFT " + np.x);
-			board.removeBall(this);
-			board.scores.removePointForPlayer1();
-			return;
-		}
-		if (op.x > Board.RIGHT) {
-			board.removeBall(this);
-			board.scores.removePointForPlayer2();
-			return;
-		}
-        
-		// hit upper or lower bounds
-		if (nb.minY() <= Board.OFFSET.y) {
-			float newY = ob.minY() - Board.OFFSET.y;
-			transform.setTy(newY);
-			direction.y *= -1;
-		}
-		if (nb.maxY() >= Board.BOTTOM) {
-			float newY = nb.maxY() - Board.BOTTOM;
-			transform.setTy(newY);
-			direction.y *= -1;
-		}
+        // leaves play area
+        if (op.x < Board.LEFT) {
+            log().info("LEFT " + np.x);
+            board.removeBall(this);
+            board.scores.removePointForPlayer1();
+            return;
+        }
+        if (op.x > Board.RIGHT) {
+            board.removeBall(this);
+            board.scores.removePointForPlayer2();
+            return;
+        }
 
-		// player paddles
-		bouncePaddle(board.player1Paddle, true);
-		bouncePaddle(board.player2Paddle, false);
+        // hit upper or lower bounds
+        if (nb.minY() <= Board.OFFSET.y) {
+            float newY = ob.minY() - Board.OFFSET.y;
+            transform.setTy(newY);
+            direction.y *= -1;
+        }
+        if (nb.maxY() >= Board.BOTTOM) {
+            float newY = nb.maxY() - Board.BOTTOM;
+            transform.setTy(newY);
+            direction.y *= -1;
+        }
 
-		board.draw[0] = op.clone();
-		board.draw[1] = np.clone();
-		// board.draw[2] = ro.clone();
-		// board.draw[3] = rd.clone();
-		// board.draw[4] = intersection.clone();
+        // player paddles
+        bouncePaddle(board.player1Paddle, true);
+        bouncePaddle(board.player2Paddle, false);
+        for (Iterator<Spatial> it = board.brickLayout.getChildren().iterator(); it.hasNext();) {
+            Brick b = (Brick) it.next();
+            bounceBrick(b);
+            break;
+        }
 
-		transform(transform);
+        board.draw[0] = op.clone();
+        board.draw[1] = np.clone();
+        // board.draw[2] = ro.clone();
+        // board.draw[3] = rd.clone();
+        // board.draw[4] = intersection.clone();
 
-		super.update(delta);
-	}
+        transform(transform);
 
-	public Point center() {
-		return getWorldBound().center();
-	}
+        super.update(delta);
+    }
+
+    public Point center() {
+        return getWorldBound().center();
+    }
 }

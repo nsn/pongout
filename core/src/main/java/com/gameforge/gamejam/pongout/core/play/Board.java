@@ -18,6 +18,7 @@ public class Board extends GroupNode<Node> {
 	public static final float RIGHT = OFFSET.x + DIMENSION.width;
 	private ArrayList<Ball> balls;
 	private ArrayList<Ball> ballsToRemove;
+    private ArrayList<Brick> bricksToRemove;
 
 	Vector[] draw = { new Vector(), new Vector(), new Vector(), new Vector(),
 			new Vector() };
@@ -31,6 +32,7 @@ public class Board extends GroupNode<Node> {
 		setTranslation(OFFSET);
 		balls = new ArrayList<Ball>();
 		ballsToRemove = new ArrayList<Ball>();
+        bricksToRemove = new ArrayList<Brick>();
 
 		setDrawBoundary(true);
 		setBoundaryColor(Color.blue(255));
@@ -47,14 +49,17 @@ public class Board extends GroupNode<Node> {
 
 		brickLayout = new BrickLayout();
 		addChild(brickLayout);
+        
+        addChild(new PowerUp(PowerUp.TYPE.SPEED, new Vector(200,200)));
+        
 	}
 
 	public void spawnBall() {
 		Random rand = new Random();
 		// direction
-		Vector dir = new Vector(-0.1f, 0.0f);
+		Vector dir = new Vector(-0.1f, 0.5f);
 		// position
-		Vector pos = new Vector(320, 150);
+		Vector pos = new Vector(800, 100);
 
 		Ball b = new Ball(this, dir);
 		b.setTranslation(pos);
@@ -65,6 +70,10 @@ public class Board extends GroupNode<Node> {
 	public void removeBall(Ball b) {
 		ballsToRemove.add(b);
 	}
+    
+    public void removeBrick(Brick b) {
+        //bricksToRemove.add(b);
+    }
 
 	@Override
 	public void update(float deltams) {
@@ -77,6 +86,9 @@ public class Board extends GroupNode<Node> {
             getChildren().remove(ball);
         }
         ballsToRemove.clear();
+        for (Brick brick: bricksToRemove) {
+            brickLayout.getChildren().remove(brick);            
+        }
 		super.update(deltams);
 	}
 
