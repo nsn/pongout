@@ -18,6 +18,10 @@ public class Ball extends GameObject {
 	private float speed; // pixels/ms
 	Vector direction;
 	AffineTransform transform;
+	BoundingRectangle ob;
+	BoundingRectangle nb;
+	Vector op;
+	Vector np;
 	Board board;
 	private PongoutSprite sprite;
 
@@ -33,6 +37,21 @@ public class Ball extends GameObject {
 		setBoundaryColor(Color.rgb(0, 0, 255));
 	}
 
+	private void bouncePadde(Paddle paddle) {
+		BoundingRectangle r = paddle.getWorldBound();
+		Vector ro = new Vector(r.maxX(), r.minY());
+		Vector rd = new Vector(r.maxX(), r.maxY());
+
+		if (Lines
+				.linesIntersect(op.x, op.y, np.x, np.y, ro.x, ro.y, rd.x, rd.y)) {
+			log().info("asdasd");
+			float newX = ob.minX() - ro.x;
+			transform.setTx(newX);
+			direction.x *= -1;
+		}
+
+	}
+
 	public void update(float delta) {
 		oldBoundingRectangle = getWorldBound().clone();
 
@@ -40,11 +59,11 @@ public class Ball extends GameObject {
 		transform = new AffineTransform();
 		transform.translate(dist.x, dist.y);
 
-		BoundingRectangle ob = oldBoundingRectangle;
-		BoundingRectangle nb = getWorldBound().translate(transform);
+		ob = oldBoundingRectangle;
+		nb = getWorldBound().translate(transform);
 
-		Vector op = new Vector(ob.center().x, ob.center().y);
-		Vector np = new Vector(nb.center().x, nb.center().y);
+		op = new Vector(ob.center().x, ob.center().y);
+		np = new Vector(nb.center().x, nb.center().y);
 
 		// hit upper or lower bounds
 		if (nb.minY() <= Board.OFFSET.y) {
@@ -59,22 +78,12 @@ public class Ball extends GameObject {
 		}
 
 		// player 1 paddle
-		BoundingRectangle r = board.player1Paddle.getWorldBound();
-		Vector ro = new Vector(r.maxX(), r.minY());
-		Vector rd = new Vector(r.maxX(), r.maxY());
-
-		if (Lines
-				.linesIntersect(op.x, op.y, np.x, np.y, ro.x, ro.y, rd.x, rd.y)) {
-			log().info("asdasd");
-			float newX = ob.minX() - ro.x + 100;
-			transform.setTx(newX);
-			direction.x *= -1;
-		}
+		bouncePadde(board.player1Paddle);
 
 		board.draw[0] = op.clone();
 		board.draw[1] = np.clone();
-		board.draw[2] = ro.clone();
-		board.draw[3] = rd.clone();
+		// board.draw[2] = ro.clone();
+		// board.draw[3] = rd.clone();
 		// board.draw[4] = intersection.clone();
 
 		transform(transform);
