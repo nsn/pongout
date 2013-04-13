@@ -6,6 +6,7 @@ import pythagoras.f.AffineTransform;
 import pythagoras.f.Dimension;
 import pythagoras.f.Lines;
 import pythagoras.f.Point;
+import pythagoras.f.Rectangle;
 import pythagoras.f.Vector;
 
 import com.gameforge.gamejam.pongout.core.PongoutSprite;
@@ -27,6 +28,7 @@ public class Ball extends GameObject {
     Vector op;
     Vector np;
     Board board;
+    Player lastBounce = Player.NONE;
     private PongoutSprite sprite;
 
     Ball(Board board, Vector direction) {
@@ -78,7 +80,7 @@ public class Ball extends GameObject {
     }
 
     private void bouncePaddle(Paddle paddle, boolean left) {
-        BoundingRectangle r = paddle.getWorldBound();
+        Rectangle r = paddle.getBounceRectangle();
         float xOffset = left ? r.width : 0.0f;
         Vector ro = new Vector(r.minX() + xOffset, r.minY());
         Vector rd = new Vector(r.minX() + xOffset, r.maxY());
@@ -91,9 +93,21 @@ public class Ball extends GameObject {
             } else {
                 newX = r.x - ob.maxX();
             }
-            log().info("asdasd " + newX);
             transform.setTx(newX);
+
+            // flat paddle
             direction.x *= -1;
+            // friction
+            direction.y += Paddle.FRICTION * paddle.velocity.y;
+            // rounded paddle
+            float intersectY = np.y - ro.y;
+            float ratio = intersectY / (r.height * .5f) - 1;
+            direction.y += Paddle.CURVE * ratio;
+
+            direction.normalizeLocal();
+
+            lastBounce = paddle.player;
+
             board.draw[2] = ro.clone();
             board.draw[3] = rd.clone();
         }
@@ -113,7 +127,6 @@ public class Ball extends GameObject {
         op = new Vector(ob.center().x, ob.center().y);
         np = new Vector(nb.center().x, nb.center().y);
 
-        log().info("LEFT " + np.x);
         // leaves play area
         if (op.x < Board.LEFT) {
             log().info("LEFT " + np.x);
@@ -142,11 +155,6 @@ public class Ball extends GameObject {
         // player paddles
         bouncePaddle(board.player1Paddle, true);
         bouncePaddle(board.player2Paddle, false);
-        for (Iterator<Spatial> it = board.brickLayout.getChildren().iterator(); it.hasNext();) {
-            Brick b = (Brick) it.next();
-            bounceBrick(b);
-            break;
-        }
 
         board.draw[0] = op.clone();
         board.draw[1] = np.clone();

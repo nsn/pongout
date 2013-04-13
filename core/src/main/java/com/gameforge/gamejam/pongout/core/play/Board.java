@@ -36,11 +36,11 @@ public class Board extends GroupNode<Node> {
 
 		setDrawBoundary(true);
 		setBoundaryColor(Color.blue(255));
-		player1Paddle = new Paddle(player1Input, 0);
+		player1Paddle = new Paddle(player1Input, 0, Player.PLAYER1);
 		player1Paddle.translate(new Vector(100, 100));
 		addChild(player1Paddle);
 
-		player2Paddle = new Paddle(player2Input, 1);
+		player2Paddle = new Paddle(player2Input, 1, Player.PLAYER2);
 		player2Paddle.translate(new Vector(1150, 100));
 		addChild(player2Paddle);
 
@@ -60,8 +60,8 @@ public class Board extends GroupNode<Node> {
 		Vector dir = new Vector(-0.1f, 0.5f);
 		// position
 		Vector pos = new Vector(800, 100);
-
 		Ball b = new Ball(this, dir);
+
 		b.setTranslation(pos);
 		balls.add(b);
 		addChild(b);
@@ -89,6 +89,7 @@ public class Board extends GroupNode<Node> {
         for (Brick brick: bricksToRemove) {
             brickLayout.getChildren().remove(brick);            
         }
+        bricksToRemove.clear();
 		super.update(deltams);
 	}
 
