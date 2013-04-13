@@ -142,12 +142,13 @@ public class Ball extends GameObject {
         bounced = bounced || bounceLine(te, ro, Paddle.CURVE);
         bounced = bounced || bounceLine(rd, be, Paddle.CURVE);
         log().info("bouncePaddle - last paddle is " + paddle.getName());
-        if(bounced) {
-            lastBounce = paddle.player;                
+        if (bounced) {
+            lastBounce = paddle.player;
         }
     }
 
     public void update(float delta) {
+        super.update(delta);
         oldBoundingRectangle = getWorldBound().clone();
 
         Vector dist = direction.scale(speed);
@@ -160,14 +161,16 @@ public class Ball extends GameObject {
         op = new Vector(ob.center().x, ob.center().y);
         np = new Vector(nb.center().x, nb.center().y);
 
+        log().info("asdasd " + op + " <-> " + np);
+
         // leaves play area
-        if (op.x < Board.LEFT) {
+        if (np.x < Board.LEFT) {
             log().info("LEFT " + np.x);
             board.removeBall(this);
             board.scores.removePointForPlayer1();
             return;
         }
-        if (op.x > Board.RIGHT) {
+        if (np.x > Board.RIGHT) {
             board.removeBall(this);
             board.scores.removePointForPlayer2();
             return;
@@ -210,7 +213,7 @@ public class Ball extends GameObject {
             direction.x += 0.02f;
         }
         direction.normalizeLocal();
-        super.update(delta);
+        // super.update(delta);
     }
 
     public Point center() {

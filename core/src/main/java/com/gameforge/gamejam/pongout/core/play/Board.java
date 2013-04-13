@@ -2,6 +2,7 @@ package com.gameforge.gamejam.pongout.core.play;
 
 import static com.gameforge.gamejam.pongout.core.play.Player.PLAYER1;
 import static playn.core.PlayN.log;
+import static playn.core.PlayN.random;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -10,12 +11,13 @@ import playn.core.Color;
 import pythagoras.f.Dimension;
 import pythagoras.f.Vector;
 
+import com.nightspawn.sg.Area;
 import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Node;
 
 public class Board extends GroupNode<Node> {
-    public static final Vector OFFSET = new Vector(0.0f, 48.0f);
-    public static final Dimension DIMENSION = new Dimension(1280, 730);
+    public static final Vector OFFSET = new Vector(20.0f, 48.0f);
+    public static final Dimension DIMENSION = new Dimension(1240, 705);
     public static final float TOP = OFFSET.y;
     public static final float BOTTOM = OFFSET.y + DIMENSION.height;
     public static final float LEFT = OFFSET.x;
@@ -63,14 +65,18 @@ public class Board extends GroupNode<Node> {
         brickLayout = new BrickLayout();
         addChild(brickLayout);
 
+        Area a = new Area(DIMENSION);
+        addChild(a);
+
         setBoundaryColor(Color.rgb(255, 0, 255));
         setDrawBoundary(true);
+
     }
 
     public void spawnBall(Vector position) {
+        log().info("pos " + position);
         // direction
-        Random rand = new Random();
-        Vector dir = new Vector(-0.1f, rand.nextFloat() - 0.5f);
+        Vector dir = new Vector(-0.1f, random() - 0.5f);
         Ball b = new Ball(this, dir);
 
         b.setTranslation(position);
