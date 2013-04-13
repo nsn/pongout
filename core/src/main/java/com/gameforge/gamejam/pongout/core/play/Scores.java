@@ -20,6 +20,7 @@ import pythagoras.f.Vector;
 public class Scores extends GroupNode<Spatial> {
     public static final int PLAYER1_POINTS_OFFSET = 100;
     public static final int PLAYER2_POINTS_OFFSET = 1000;
+    private static final int MAX_HP = 1;
     
     List<PongoutSprite> player1Points;
     List<PongoutSprite> player2Points;
@@ -27,7 +28,7 @@ public class Scores extends GroupNode<Spatial> {
     Scores() {
         player1Points = new ArrayList<PongoutSprite>();
         player2Points = new ArrayList<PongoutSprite>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < MAX_HP; i++) {
             PongoutSprite player1Heart = PongoutSprite.create(30, 30, 0, 0);
             player1Heart.translate(new Vector(40 * i + PLAYER1_POINTS_OFFSET, 0));
             player1Heart.setBoundaryColor(Color.rgb(255, 0, 255));
@@ -57,6 +58,13 @@ public class Scores extends GroupNode<Spatial> {
             player2Points.remove(lastHeart);
             getChildren().remove(lastHeart);
         }
+    }
+    
+    public boolean gameOver() {
+        if(player1Points.size() <= 0 || player2Points.size() <= 0) {
+            return true;
+        }
+        return false;
     }
     
 }

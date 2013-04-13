@@ -9,6 +9,7 @@ import pythagoras.f.Rectangle;
 import com.gameforge.gamejam.pongout.core.GameState;
 import com.gameforge.gamejam.pongout.core.InputListenerList;
 import com.gameforge.gamejam.pongout.core.PlayNRenderer;
+import com.gameforge.gamejam.pongout.core.PongOut;
 import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Scene;
 import com.nightspawn.sg.Spatial;
@@ -20,8 +21,8 @@ public class PlayState extends GameState {
 	private final UserInput player2Input;
 	private Board board;
 
-	public PlayState(PlayNRenderer renderer) {
-		super(GameState.STATE.PLAY, renderer);
+	public PlayState(PlayNRenderer renderer, PongOut pongOut) {
+		super(GameState.STATE.PLAY, renderer, pongOut);
 
 		// init input
 		inputListeners = new InputListenerList();
@@ -79,6 +80,9 @@ public class PlayState extends GameState {
 	@Override
 	public void update(float delta) {
 		scene.update(delta);
+        if(board.scores.gameOver()) {
+            pongOut.changeState(GameState.STATE.RESULT);
+        }
 	}
 
 }

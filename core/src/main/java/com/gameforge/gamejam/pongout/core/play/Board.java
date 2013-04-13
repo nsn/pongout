@@ -22,7 +22,8 @@ public class Board extends GroupNode<Node> {
 	Vector[] draw = { new Vector(), new Vector(), new Vector() };
 	Paddle player1Paddle;
 	Paddle player2Paddle;
-    private Scores scores;
+    Scores scores;
+    boolean gameOver;
 
 	public Board(UserInput player1Input, UserInput player2Input) {
 		setTranslation(OFFSET);
@@ -137,6 +138,7 @@ public class Board extends GroupNode<Node> {
                 bIt.remove();
                 getChildren().remove(b);
             }
+            
 		}
 
 	}

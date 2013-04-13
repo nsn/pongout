@@ -7,6 +7,7 @@ import playn.core.Surface;
 import pythagoras.f.Rectangle;
 
 import com.gameforge.gamejam.pongout.core.play.PlayState;
+import com.gameforge.gamejam.pongout.core.play.ResultState;
 import playn.core.Image;
 import static playn.core.PlayN.assets;
 
@@ -43,8 +44,11 @@ public class PongOut implements Game {
 	public void changeState(GameState.STATE newState) {
 		switch (newState) {
 		case PLAY:
-			changeState(new PlayState(renderer));
+			changeState(new PlayState(renderer, this));
 			break;
+        case RESULT:
+            changeState(new ResultState(renderer, this));
+            break;
 		default:
 			throw new IllegalArgumentException("unable to switch to "
 					+ newState);
