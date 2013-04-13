@@ -42,7 +42,7 @@ public class Ball extends GameObject {
         speed = INITIAL_SPEED;
         this.direction = direction.normalize();
 
-        setDrawBoundary(true);
+        setDrawBoundary(false);
         setBoundaryColor(Color.rgb(0, 0, 255));
     }
 
@@ -116,12 +116,12 @@ public class Ball extends GameObject {
             transform.setTx(op.x - intersection.x);
             transform.setTy(op.y - intersection.y);
 
-            board.draw[4] = intersection.clone();
-
-            board.draw[2] = intersection.clone();
-            board.draw[3] = intersection.add(direction.scale(speed * 2));
-            board.draw[5] = intersection.clone();
-            board.draw[6] = intersection.add(normal.scale(speed));
+//            board.draw[4] = intersection.clone();
+//
+//            board.draw[2] = intersection.clone();
+//            board.draw[3] = intersection.add(direction.scale(speed * 2));
+//            board.draw[5] = intersection.clone();
+//            board.draw[6] = intersection.add(normal.scale(speed));
 
             return true;
         }

@@ -16,8 +16,8 @@ import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Node;
 
 public class Board extends GroupNode<Node> {
-    public static final Vector OFFSET = new Vector(20.0f, 100.0f);
-    public static final Dimension DIMENSION = new Dimension(1240, 600);
+    public static final Vector OFFSET = new Vector(20.0f, 60.0f);
+    public static final Dimension DIMENSION = new Dimension(1240, 660);
     public static final float TOP = OFFSET.y;
     public static final float BOTTOM = OFFSET.y + DIMENSION.height;
     public static final float LEFT = OFFSET.x;
@@ -60,17 +60,17 @@ public class Board extends GroupNode<Node> {
         player2Paddle.setName("player2");
         addChild(player2Paddle);
 
-        scores = new Scores();
-        addChild(scores);
-
         brickLayout = new BrickLayout();
         addChild(brickLayout);
 
+        scores = new Scores();
+        addChild(scores);
+        
         Area a = new Area(DIMENSION);
         addChild(a);
 
         setBoundaryColor(Color.rgb(255, 0, 255));
-        setDrawBoundary(true);
+        setDrawBoundary(false);
 
     }
 
