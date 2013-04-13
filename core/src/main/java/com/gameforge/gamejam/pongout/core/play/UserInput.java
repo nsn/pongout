@@ -10,8 +10,8 @@ public class UserInput implements Keyboard.Listener {
 	public boolean up = false;
 	public boolean down = false;
 	public boolean action = false;
-	private final Key[] upKeys;
-	private final Key[] downKeys;
+	private Key[] upKeys;
+	private Key[] downKeys;
 	private final Key[] actionKeys;
 
 	public UserInput(Key[] upKeys, Key[] downKeys, Key[] actionsKeys) {
@@ -31,6 +31,12 @@ public class UserInput implements Keyboard.Listener {
 		checkKeys(event, false);
 	}
 
+    public void switchKeys() {
+        Key[] tmp = this.upKeys;
+        this.upKeys = this.downKeys;
+        this.downKeys = tmp;
+    }
+    
 	private void checkKeys(Event event, boolean targetState) {
 		// up?
 		if (inArray(upKeys, event.key())) {

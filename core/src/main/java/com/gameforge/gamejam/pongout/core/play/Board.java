@@ -120,6 +120,11 @@ public class Board extends GroupNode<Node> {
                 lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.SPEED);
             }
             break;
+        case CONTROLS:
+            if (lastActivePaddle != null) {
+                lastActivePaddle.getUserInput().switchKeys();
+                lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.CONTROLS);
+            }
         }
 
     }

@@ -99,6 +99,9 @@ public class Paddle extends GroupNode<Spatial> {
         case SPEED:
             setFrame(2);
             break;
+        case CONTROLS:
+            setFrame(12);
+            break;
         }
     }
 
@@ -140,4 +143,9 @@ public class Paddle extends GroupNode<Spatial> {
         return new Rectangle(r.x, r.y + BOUNCE_SUB, r.width, r.height - 2
                 * BOUNCE_SUB);
     }
+
+    public UserInput getUserInput() {
+        return userInput;
+    }
+    
 }
