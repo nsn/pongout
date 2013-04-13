@@ -1,9 +1,11 @@
 package com.gameforge.gamejam.pongout.core.play;
 
 import playn.core.Color;
+import pythagoras.f.Rectangle;
 import pythagoras.f.Vector;
 
 import com.gameforge.gamejam.pongout.core.PongoutSprite;
+import com.nightspawn.sg.BoundingRectangle;
 import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Spatial;
 
@@ -22,6 +24,7 @@ public class Paddle extends GroupNode<Spatial> {
 	public static final int BASEFRAME = 0;
 	public static final float FRICTION = 0.01f;
 	public static final float CURVE = 0.1f;
+	public static final float BOUNCE_SUB = 10.0f;
 	private final PongoutSprite top;
 	private PongoutSprite bottom;
 	private PongoutSprite middle;
@@ -95,4 +98,9 @@ public class Paddle extends GroupNode<Spatial> {
 		}
 	}
 
+	public Rectangle getBounceRectangle() {
+		BoundingRectangle r = getWorldBound();
+		return new Rectangle(r.x, r.y + BOUNCE_SUB, r.width, r.height - 2
+				* BOUNCE_SUB);
+	}
 }

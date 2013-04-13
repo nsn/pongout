@@ -6,6 +6,7 @@ import pythagoras.f.AffineTransform;
 import pythagoras.f.Dimension;
 import pythagoras.f.Lines;
 import pythagoras.f.Point;
+import pythagoras.f.Rectangle;
 import pythagoras.f.Vector;
 
 import com.gameforge.gamejam.pongout.core.PongoutSprite;
@@ -38,7 +39,7 @@ public class Ball extends GameObject {
 	}
 
 	private void bouncePaddle(Paddle paddle, boolean left) {
-		BoundingRectangle r = paddle.getWorldBound();
+		Rectangle r = paddle.getBounceRectangle();
 		float xOffset = left ? r.width : 0.0f;
 		Vector ro = new Vector(r.minX() + xOffset, r.minY());
 		Vector rd = new Vector(r.minX() + xOffset, r.maxY());
