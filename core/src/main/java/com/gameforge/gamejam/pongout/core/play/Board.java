@@ -56,7 +56,9 @@ public class Board extends GroupNode<Node> {
 		Ball b = new Ball(this, dir);
 
 		// position
-		Vector pos = new Vector(320, 150);
+		Vector pos = new Vector(320, 138);
+		pos = new Vector(320, 228);
+		// pos = new Vector(320, 183);
 
 		b.setTranslation(pos);
 		balls.add(b);
@@ -73,11 +75,11 @@ public class Board extends GroupNode<Node> {
 		if (balls.isEmpty()) {
 			spawnBall();
 		}
-        for (Ball ball : ballsToRemove) {
-            balls.remove(ball);
-            getChildren().remove(ball);
-        }
-        ballsToRemove.clear();
+		for (Ball ball : ballsToRemove) {
+			balls.remove(ball);
+			getChildren().remove(ball);
+		}
+		ballsToRemove.clear();
 		super.update(deltams);
 	}
 

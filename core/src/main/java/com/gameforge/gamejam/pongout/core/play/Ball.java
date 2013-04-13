@@ -56,7 +56,14 @@ public class Ball extends GameObject {
 
 			// flat paddle
 			direction.x *= -1;
+			// friction
 			direction.y += Paddle.FRICTION * paddle.velocity.y;
+			// rounded paddle
+			float intersectY = np.y - ro.y;
+			float ratio = intersectY / (r.height * .5f) - 1;
+			direction.y += Paddle.CURVE * ratio;
+
+			direction.normalizeLocal();
 
 			board.draw[2] = ro.clone();
 			board.draw[3] = rd.clone();
@@ -77,7 +84,6 @@ public class Ball extends GameObject {
 		op = new Vector(ob.center().x, ob.center().y);
 		np = new Vector(nb.center().x, nb.center().y);
 
-        log().info("LEFT " + np.x);
 		// leaves play area
 		if (op.x < Board.LEFT) {
 			log().info("LEFT " + np.x);
@@ -90,7 +96,7 @@ public class Ball extends GameObject {
 			board.scores.removePointForPlayer2();
 			return;
 		}
-        
+
 		// hit upper or lower bounds
 		if (nb.minY() <= Board.OFFSET.y) {
 			float newY = ob.minY() - Board.OFFSET.y;

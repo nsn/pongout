@@ -21,6 +21,7 @@ public class Paddle extends GroupNode<Spatial> {
 	public static final int PADDLE_SPEED = 1;
 	public static final int BASEFRAME = 0;
 	public static final float FRICTION = 0.01f;
+	public static final float CURVE = 0.1f;
 	private final PongoutSprite top;
 	private PongoutSprite bottom;
 	private PongoutSprite middle;
