@@ -1,18 +1,12 @@
 package com.gameforge.gamejam.pongout.core.play;
 
-import static playn.core.PlayN.log;
-
 import java.util.ArrayList;
+import java.util.Random;
 
 import playn.core.Color;
-import pythagoras.f.AffineTransform;
 import pythagoras.f.Dimension;
-import pythagoras.f.Lines;
-import pythagoras.f.Ray2;
-import pythagoras.f.Rectangle;
 import pythagoras.f.Vector;
 
-import com.nightspawn.sg.BoundingRectangle;
 import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Node;
 
@@ -26,6 +20,9 @@ public class Board extends GroupNode<Node> {
 			new Vector() };
 	Paddle player1Paddle;
 	Paddle player2Paddle;
+	Scores scores;
+	BrickLayout brickLayout;
+	boolean gameOver;
 
 	public Board(UserInput player1Input, UserInput player2Input) {
 		setTranslation(OFFSET);
@@ -41,9 +38,17 @@ public class Board extends GroupNode<Node> {
 		player2Paddle.translate(new Vector(1150, 100));
 		addChild(player2Paddle);
 
+		scores = new Scores();
+		addChild(scores);
+
+		brickLayout = new BrickLayout();
+		addChild(brickLayout);
 	}
 
 	public void spawnBall() {
+
+		Random rand = new Random();
+
 		// direction
 		Vector dir = new Vector(-0.1f, 0.0f);
 
@@ -59,124 +64,11 @@ public class Board extends GroupNode<Node> {
 
 	@Override
 	public void update(float deltams) {
+		// spawn ball if there are no balls left
+		if (balls.isEmpty()) {
+			spawnBall();
+		}
 		super.update(deltams);
-
-		for (Ball b : balls) {
-			BoundingRectangle ob = b.oldBoundingRectangle;
-			BoundingRectangle nb = b.getWorldBound();
-			Vector op = new Vector(ob.center().x, ob.center().y);
-			Vector np = new Vector(b.center().x, b.center().y);
-			AffineTransform t = b.transform;
-
-			Vector intersection = new Vector();
-			// player 1 paddle
-			BoundingRectangle r = player1Paddle.getWorldBound();
-			Vector ro = new Vector(r.maxX(), r.minY());
-			Vector rd = new Vector(r.maxX(), r.maxY());
-
-			draw[0] = op.clone();
-			draw[1] = np.clone();
-			draw[2] = ro.clone();
-			draw[3] = rd.clone();
-			draw[4] = intersection.clone();
-
-			if (Lines.linesIntersect(op.x, op.y, np.x, np.y, ro.x, ro.y, rd.x,
-					rd.y)) {
-
-				float dist = ob.minX() - ro.x + 100;
-				// log().info("dista " + dist);
-				// b.direction.x *= -1;
-				// log().info("interset! " + b.direction.x);
-				// t.setTx(dist);
-			}
-
-			// b.transform(t);
-		}
-
 	}
 
-	public void foo() {
-		Rectangle r = new Rectangle(OFFSET.x, OFFSET.y, DIMENSION.width,
-				DIMENSION.height);
-		Vector tl = new Vector(OFFSET.x, OFFSET.y);
-		Vector tr = new Vector(OFFSET.x + DIMENSION.width, OFFSET.y);
-		// Rectangle upper = new Rectangle(-100, -100, DIMENSION.width + 200,
-		// OFFSET.y + 100);
-
-		Ray2 upper = new Ray2(tl, new Vector(1, 0));
-
-		// balls
-		for (Ball b : balls) {
-			BoundingRectangle ob = b.oldBoundingRectangle;
-			BoundingRectangle nb = b.getWorldBound();
-			Vector op = new Vector(b.oldBoundingRectangle.center().x,
-					b.oldBoundingRectangle.center().y);
-			Vector np = new Vector(b.center().x, b.center().y);
-
-			log().info("asdasd " + np);
-
-			Vector intersection = new Vector();
-			// upper?
-			if (upper.getIntersection(op, np, intersection)) {
-				log().info("upper!");
-				draw[0] = op.clone();
-				draw[1] = np.clone();
-				draw[2] = tl.clone();
-				draw[3] = tr.clone();
-				draw[4] = intersection.clone();
-			}
-		}
-
-		// //my bounds
-		// Rectangle r = new Rectangle(OFFSET.x, OFFSET.y,
-		// DIMENSION.width, DIMENSION.height); Vector tl = new Vector(OFFSET.x,
-		// OFFSET.y); Vector tr = new Vector(OFFSET.x + DIMENSION.width,
-		// OFFSET.y); Ray2 upper = new Ray2(tl, new Vector(1, 0));
-		// // move balls
-		// for (Ball b : balls) { AffineTransform t = b.trans; BoundingRectangle
-		// ob = b.getWorldBound(); Vector op = new Vector(ob.x, ob.y);
-		// BoundingRectangle nb = b.newBoundingRectangle; Vector np = new
-		// Vector(nb.x, nb.y);
-		//
-		// Ray2 mov; Vector intersection;
-		//
-		// // test? // Vector o1 = new Vector(0, 100); // Vector d1 = new
-		// Vector(500, 100); // Vector o2 = new Vector(100, 0); // Vector d2 =
-		// new Vector(100, 200); // mov = new Ray2(o1,
-		// d1.subtract(o1).normalize()); // intersection = new Vector(); // if
-		// (mov.getIntersection(o2, d2, intersection)) { // draw[0] =
-		// o1.clone(); // draw[1] = d1.clone(); // draw[2] = o2.clone(); //
-		// draw[3] = d2.clone(); // draw[4] = intersection.clone(); // // //
-		// log().debug("intersection " + intersection); // // float dist =
-		// intersection.distance(op); // // float len = np.distance(op); // //
-		// log().debug("aasd " + len + " " + dist); // }
-		//
-		// intersection = new Vector(); // upper? if (upper.getIntersection(op,
-		// np, intersection)) { draw[0] = op.clone(); draw[1] = np.clone();
-		// draw[2] = tl.clone(); draw[3] = tr.clone(); draw[4] =
-		// intersection.clone();
-		//
-		// float dist = intersection.distance(op); float len = np.distance(op);
-		// float ratio = 1 - (dist / len);
-		//
-		// log().debug("aasd " + len + " " + dist + " " + ratio); }
-		//
-		// // hit upper or lower bounds if (nb.minY() <= r.minY()) { float newY
-		// = ob.minY() - r.minY(); t.setTy(newY); b.direction.y *= -1; }
-		//
-		// if (nb.maxY() >= r.maxY()) { float newY = r.maxY() - ob.maxY(); //
-		// t.setTy(newY); b.direction.y *= -1; }
-		//
-		// // Vector intersection = intersect(op, np, new Vector(0.0f, //
-		// OFFSET.y + DIMENSION.height), new Vector(1.0f, OFFSET.y // +
-		// DIMENSION.height)); // draw[0] = op.clone(); // draw[1] = np.clone();
-		// // draw[2] = intersection.clone(); // float dist =
-		// intersection.distance(op); // float length =
-		// np.subtract(op).length(); // float rest = length - dist; //
-		// log().info( // "asdasd " + dist + "  " + length + "  " + rest // +
-		// " --> " + intersection + " / " + np + " <-> " // + op + " dafuq? " +
-		// np.subtract(op)); // /b.direction.y *= -1; // } // hit paddles?
-		// }
-
-	}
 }

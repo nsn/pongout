@@ -6,11 +6,13 @@ import pythagoras.f.Rectangle;
 public abstract class GameState {
 	protected STATE state;
 	protected PlayNRenderer renderer;
+    protected PongOut pongOut;
 
-	public GameState(STATE state, PlayNRenderer renderer) {
+	public GameState(STATE state, PlayNRenderer renderer, PongOut pongOut) {
 		super();
 		this.state = state;
 		this.renderer = renderer;
+        this.pongOut = pongOut;
 	}
 
 	public abstract void onEntry();
@@ -23,6 +25,6 @@ public abstract class GameState {
 	public abstract void update(float delta);
 
 	public enum STATE {
-		PLAY, TEST
+		PLAY, TEST, RESULT, LOADING
 	}
 }
