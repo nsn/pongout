@@ -24,7 +24,6 @@ public class ResultState extends GameState {
     ResultInput resultInput;
     private final Scene scene;
     private Result result;
-    private boolean startNewGame = false;
     
     public ResultState(PlayNRenderer renderer, PongOut pongOut) {
         super(GameState.STATE.RESULT, renderer, pongOut);
@@ -43,10 +42,12 @@ public class ResultState extends GameState {
 
     @Override
     public void onEntry() {
+        log().info("Enter ResultState");
     }
 
     @Override
     public void onExit() {
+        log().info("Exit ResultState");
     }
 
     @Override

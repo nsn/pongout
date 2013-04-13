@@ -23,6 +23,7 @@ public class Board extends GroupNode<Node> {
 	Paddle player1Paddle;
 	Paddle player2Paddle;
     Scores scores;
+    BrickLayout brickLayout;
     boolean gameOver;
 
 	public Board(UserInput player1Input, UserInput player2Input) {
@@ -41,6 +42,9 @@ public class Board extends GroupNode<Node> {
         
         scores = new Scores();
         addChild(scores);
+        
+        brickLayout = new BrickLayout();
+        addChild(brickLayout);
 	}
 
 	public void spawnBall() {

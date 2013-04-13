@@ -20,7 +20,10 @@ import pythagoras.f.Vector;
 public class Scores extends GroupNode<Spatial> {
     public static final int PLAYER1_POINTS_OFFSET = 100;
     public static final int PLAYER2_POINTS_OFFSET = 1000;
-    private static final int MAX_HP = 1;
+    private static final int SPRITESHEET_OFFSET = 440;
+    private static final int MAX_HP = 5;
+    public static final int WIDTH = 30;
+    public static final int HEIGHT = 45;
     
     List<PongoutSprite> player1Points;
     List<PongoutSprite> player2Points;
@@ -29,13 +32,13 @@ public class Scores extends GroupNode<Spatial> {
         player1Points = new ArrayList<PongoutSprite>();
         player2Points = new ArrayList<PongoutSprite>();
         for (int i = 0; i < MAX_HP; i++) {
-            PongoutSprite player1Heart = PongoutSprite.create(30, 30, 0, 0);
+            PongoutSprite player1Heart = PongoutSprite.create(WIDTH, HEIGHT, 0, SPRITESHEET_OFFSET);
             player1Heart.translate(new Vector(40 * i + PLAYER1_POINTS_OFFSET, 0));
             player1Heart.setBoundaryColor(Color.rgb(255, 0, 255));
             player1Points.add(player1Heart);
             addChild(player1Heart);
             
-            PongoutSprite player2Heart = PongoutSprite.create(30, 30, 0, 0);
+            PongoutSprite player2Heart = PongoutSprite.create(WIDTH, HEIGHT, 0, SPRITESHEET_OFFSET);
             player2Heart.translate(new Vector(40 * i + PLAYER2_POINTS_OFFSET, 0));
             player2Heart.setBoundaryColor(Color.rgb(255, 0, 255));
             player2Points.add(player2Heart);
