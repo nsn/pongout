@@ -53,14 +53,13 @@ public class Ball extends GameObject {
             if (!movement.getIntersection(s, e, intersection))
                 return;
 
-            // board.draw[3] =
             direction = direction.cross(e.subtract(s)).normalize();
             transform.setTx(op.x - intersection.x);
             transform.setTy(op.y - intersection.y);
 
             board.draw[4] = intersection.clone();
-            board.draw[2] = s.clone();
-            board.draw[3] = e.clone();
+            // board.draw[2] = s.clone();
+            // board.draw[3] = e.clone();
         }
 
     }
@@ -72,9 +71,14 @@ public class Ball extends GameObject {
         Vector rd = new Vector(r.minX() + xOffset, r.maxY());
         float ed = left ? -1 : 1;
         Vector be = new Vector(rd.x + (Paddle.PADDLE_WIDTH * .5f * ed), rd.y
-                + (Paddle.PADDLE_WIDTH * .5f * ed));
+                + (Paddle.PADDLE_WIDTH * .5f));
         bounceLine(ro, rd, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
         bounceLine(rd, be, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
+        if (paddle.player == Player.PLAYER1) {
+            board.draw[2] = rd.clone();
+            board.draw[3] = be.clone();
+        }
+
     }
 
     private void bouncePaddleOld(Paddle paddle, boolean left) {
