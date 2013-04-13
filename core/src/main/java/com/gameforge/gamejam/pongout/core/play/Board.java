@@ -76,23 +76,36 @@ public class Board extends GroupNode<Node> {
 			Vector op = new Vector(ob.x, ob.y);
 			BoundingRectangle nb = b.newBoundingRectangle;
 			Vector np = new Vector(nb.x, nb.y);
+
 			// hit upper or lower bounds
-			if (nb.minY() <= r.minY() || nb.maxY() >= r.maxY()) {
-				// Vector intersection = intersect(op, np, new Vector(0.0f,
-				// OFFSET.y + DIMENSION.height), new Vector(1.0f, OFFSET.y
-				// + DIMENSION.height));
-				// draw[0] = op.clone();
-				// draw[1] = np.clone();
-				// draw[2] = intersection.clone();
-				// float dist = intersection.distance(op);
-				// float length = np.subtract(op).length();
-				// float rest = length - dist;
-				// log().info(
-				// "asdasd " + dist + "  " + length + "  " + rest
-				// + " --> " + intersection + " / " + np + " <-> "
-				// + op + " dafuq? " + np.subtract(op));
+			if (nb.minY() <= r.minY()) {
+				float newY = ob.minY() - r.minY();
+				t.setTy(newY);
 				b.direction.y *= -1;
 			}
+
+			if (nb.maxY() >= r.maxY()) {
+				float newY = r.maxY() - ob.maxY();
+				t.setTy(newY);
+				b.direction.y *= -1;
+			}
+
+			// Vector intersection = intersect(op, np, new Vector(0.0f,
+			// OFFSET.y + DIMENSION.height), new Vector(1.0f, OFFSET.y
+			// + DIMENSION.height));
+			// draw[0] = op.clone();
+			// draw[1] = np.clone();
+			// draw[2] = intersection.clone();
+			// float dist = intersection.distance(op);
+			// float length = np.subtract(op).length();
+			// float rest = length - dist;
+			// log().info(
+			// "asdasd " + dist + "  " + length + "  " + rest
+			// + " --> " + intersection + " / " + np + " <-> "
+			// + op + " dafuq? " + np.subtract(op));
+			// /b.direction.y *= -1;
+			// }
+			// hit paddles?
 			b.transform(t);
 		}
 
