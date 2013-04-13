@@ -9,6 +9,7 @@ import pythagoras.f.Vector;
 
 import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Node;
+import static playn.core.PlayN.log;
 
 public class Board extends GroupNode<Node> {
 	public static final Vector OFFSET = new Vector(0.0f, 48.0f);
@@ -19,6 +20,7 @@ public class Board extends GroupNode<Node> {
 	private ArrayList<Ball> balls;
 	private ArrayList<Ball> ballsToRemove;
     private ArrayList<Brick> bricksToRemove;
+    private ArrayList<PowerUp> powerUps;
 
 	Vector[] draw = { new Vector(), new Vector(), new Vector(), new Vector(),
 			new Vector() };
@@ -33,6 +35,7 @@ public class Board extends GroupNode<Node> {
 		balls = new ArrayList<Ball>();
 		ballsToRemove = new ArrayList<Ball>();
         bricksToRemove = new ArrayList<Brick>();
+        powerUps = new ArrayList<PowerUp>();
 
 		setDrawBoundary(true);
 		setBoundaryColor(Color.blue(255));
@@ -50,14 +53,13 @@ public class Board extends GroupNode<Node> {
 		brickLayout = new BrickLayout();
 		addChild(brickLayout);
         
-        addChild(new PowerUp(PowerUp.TYPE.SPEED, new Vector(200,200)));
         
 	}
 
 	public void spawnBall() {
 		Random rand = new Random();
 		// direction
-		Vector dir = new Vector(-0.1f, 0.5f);
+		Vector dir = new Vector(-0.1f, rand.nextFloat()-0.5f);
 		// position
 		Vector pos = new Vector(800, 100);
 		Ball b = new Ball(this, dir);
@@ -72,7 +74,7 @@ public class Board extends GroupNode<Node> {
 	}
     
     public void removeBrick(Brick b) {
-        //bricksToRemove.add(b);
+        bricksToRemove.add(b);
     }
 
 	@Override
@@ -87,7 +89,11 @@ public class Board extends GroupNode<Node> {
         }
         ballsToRemove.clear();
         for (Brick brick: bricksToRemove) {
-            brickLayout.getChildren().remove(brick);            
+            log().info("removing brick...");
+            brickLayout.getChildren().remove(brick);
+            PowerUp pu = RandomPowerUpGenerator.generate(brick);
+            powerUps.add(pu);
+            addChild(pu);
         }
         bricksToRemove.clear();
 		super.update(deltams);

@@ -23,7 +23,6 @@ public class PowerUp extends GroupNode<Spatial>{
     private int deltaCounter;
     
     public enum TYPE {
-        GLUE,
         SPEED
     }
     

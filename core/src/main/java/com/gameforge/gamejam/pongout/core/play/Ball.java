@@ -43,31 +43,39 @@ public class Ball extends GameObject {
         setBoundaryColor(Color.rgb(0, 0, 255));
     }
 
-    private void bounceBrick(Brick brick) {
+    private boolean bounceBrick(Brick brick) {
         BoundingRectangle r = brick.sprite.getWorldBound();
         boolean hitSomething = false;
         if (op.x > r.maxX()) {
+//            log().info(String.format("right from brick %f,%f,%f,%f", r.maxX(), r.minY(), r.maxX(), r.maxY()));
             if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.maxX(), r.minY(), r.maxX(), r.maxY())) {
+//                log().info("hit brick from right");
                 direction.x *= -1;
                 transform.setTx(ob.minX() - r.x);
                 hitSomething = true;
             }
         } else if (op.y > r.maxY()) {
+//            log().info("bottom from brick");
             if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(), r.maxY(), r.maxX(), r.maxY())) {
-                direction.x *= -1;
-                transform.setTx(ob.minY() - r.y);
+//                log().info("hit brick from bottom");
+                direction.y *= -1;
+                transform.setTy(ob.minY() - r.y);
                 hitSomething = true;
             }
         } else if (op.x < r.minX()) {
+//            log().info("left from brick");
             if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(), r.minY(), r.minX(), r.maxY())) {
+//                log().info("hit brick from left");
                 direction.x *= -1;
                 transform.setTx(r.x - ob.maxX());
                 hitSomething = true;
             }
         } else if (op.y < r.minY()) {
-            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(), r.minY(), r.maxX(), r.maxY())) {
-                direction.x *= -1;
-                transform.setTx(r.y - ob.maxY());
+//            log().info("top from brick");
+            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(), r.minY(), r.maxX(), r.minY())) {
+//                log().info("hit brick from top");
+                direction.y *= -1;
+                transform.setTy(r.y - ob.maxY());
                 hitSomething = true;
             }
         }
@@ -77,6 +85,8 @@ public class Ball extends GameObject {
                 board.removeBrick(brick);
             }
         }
+        
+        return hitSomething;
     }
 
     private void bouncePaddle(Paddle paddle, boolean left) {
@@ -155,6 +165,14 @@ public class Ball extends GameObject {
         // player paddles
         bouncePaddle(board.player1Paddle, true);
         bouncePaddle(board.player2Paddle, false);
+
+        // bricks
+        for (Iterator<Spatial> it = board.brickLayout.getChildren().iterator(); it.hasNext();) {
+            Brick brick = (Brick) it.next();
+            if(bounceBrick(brick)) {
+                break;
+            }
+        }
 
         board.draw[0] = op.clone();
         board.draw[1] = np.clone();
