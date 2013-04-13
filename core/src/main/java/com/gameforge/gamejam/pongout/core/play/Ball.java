@@ -39,7 +39,58 @@ public class Ball extends GameObject {
 		setBoundaryColor(Color.rgb(0, 0, 255));
 	}
 
+	private void bounceLine(Vector s, Vector e, float friction,
+			Vector velocity, float curve) {
+		Rectangle r = new Rectangle(s.x, s.y, e.x - s.x, e.y - s.y);
+		float newX = 0.0f;
+		if (Lines.linesIntersect(op.x, op.y, np.x, np.y, s.x, s.y, e.x, e.y)) {
+			log().debug("intersect");
+			Vector newDir = s.add(e.subtract(e)).crossLocal(direction);
+			log().info("penis " + direction + "  <->  " + newDir);
+			if (op.x > r.maxX()) {
+				newX = op.x - r.maxX();
+				log().debug("right " + newX);
+			}
+			if (op.x < r.minX()) {
+				newX = r.minX() - op.x;
+				log().debug("left " + newX);
+			}
+			if (op.y > r.maxY()) {
+				// log().debug("top");
+				// direction.y *= -1;
+			}
+			if (op.y < r.minX()) {
+				// log().debug("bottom");
+				// direction.y *= -1;
+			}
+			if (newX != 0.0f) {
+				transform.setTx(newX);
+				// left or right
+				direction.x *= -1;
+				// friction
+				direction.y += friction * velocity.y;
+				// curve
+				float intersectY = np.y - s.y;
+				float ratio = intersectY / (r.height * .5f) - 1;
+				direction.y += curve * ratio;
+			}
+			// direction = newDir.normalize();
+
+			board.draw[2] = s.clone();
+			board.draw[3] = e.clone();
+		}
+
+	}
+
 	private void bouncePaddle(Paddle paddle, boolean left) {
+		Rectangle r = paddle.getBounceRectangle();
+		float xOffset = left ? r.width : 0.0f;
+		Vector ro = new Vector(r.minX() + xOffset, r.minY());
+		Vector rd = new Vector(r.minX() + xOffset, r.maxY());
+		bounceLine(ro, rd, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
+	}
+
+	private void bouncePaddleOld(Paddle paddle, boolean left) {
 		Rectangle r = paddle.getBounceRectangle();
 		float xOffset = left ? r.width : 0.0f;
 		Vector ro = new Vector(r.minX() + xOffset, r.minY());
@@ -70,6 +121,9 @@ public class Ball extends GameObject {
 
 			board.draw[2] = ro.clone();
 			board.draw[3] = rd.clone();
+		}
+		if (op.y > rd.y) {
+
 		}
 
 	}

@@ -53,12 +53,14 @@ public class Board extends GroupNode<Node> {
 		Random rand = new Random();
 		// direction
 		Vector dir = new Vector(-0.1f, 0.0f);
+		// dir = new Vector(-1.0f, 2.0f);
 		Ball b = new Ball(this, dir);
 
 		// position
 		Vector pos = new Vector(320, 138);
 		// pos = new Vector(320, 228);
 		pos = new Vector(320, 183);
+		// pos = new Vector(230, 450);
 
 		b.setTranslation(pos);
 		balls.add(b);
