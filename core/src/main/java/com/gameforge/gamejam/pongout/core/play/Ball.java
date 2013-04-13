@@ -76,6 +76,19 @@ public class Ball extends GameObject {
 			transform.setTy(newY);
 			direction.y *= -1;
 		}
+		log().info(" " + np.x);
+		// leaves play area
+		if (np.x < Board.LEFT) {
+			log().info("LEFT " + np.x);
+			board.removeBall(this);
+			board.scores.removePointForPlayer1();
+			// return;
+		}
+		if (np.x > Board.RIGHT) {
+			board.removeBall(this);
+			board.scores.removePointForPlayer2();
+			// return;
+		}
 
 		// player 1 paddle
 		bouncePadde(board.player1Paddle);
