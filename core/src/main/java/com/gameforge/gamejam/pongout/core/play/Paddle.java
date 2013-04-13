@@ -16,15 +16,17 @@ public class Paddle extends GroupNode<Spatial> {
 	public static final int BOTTOM_OFFSET = 30;
 	public static final int TOP_HEIGHT = 30;
 	public static final int BOTTOM_HEIGHT = 30;
-	public static final int MIDDLE_HEIGHT_DEFAULT = 30;
+	public static final int MIDDLE_HEIGHT_DEFAULT = 60;
 	public static final int MIDDLE_OFFSET = 60;
-	public static final int BOTTOM_TRANSLATION_DEFAULT = 60;
+	public static final int BOTTOM_TRANSLATION_DEFAULT = 90;
 	public static final int MIDDLE_TRANSLATION_DEFAULT = 30;
 	public static final int PADDLE_SPEED = 1;
 	public static final int BASEFRAME = 0;
 	public static final float FRICTION = 0.01f;
 	public static final float CURVE = 0.1f;
 	public static final float BOUNCE_SUB = 10.0f;
+    public static final int SIZE_INCREASE = 60;
+    public static final int MAX_SIZE = 240;
 	private final PongoutSprite top;
 	private PongoutSprite bottom;
 	private PongoutSprite middle;
@@ -75,7 +77,14 @@ public class Paddle extends GroupNode<Spatial> {
 
 		addChild(middle);
 	}
-
+    
+    public void increaseSize() {
+        float currentSize = middle.getWorldBound().height;
+        if(currentSize < MAX_SIZE) {
+            setSize( currentSize + SIZE_INCREASE);            
+        }
+    }
+    
 	public void setSpeed(float speed) {
 		setSpeed(speed);
 	}

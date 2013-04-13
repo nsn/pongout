@@ -23,7 +23,7 @@ public class PowerUp extends GroupNode<Spatial>{
     private int deltaCounter;
     
     public enum TYPE {
-        SPEED
+        SPEED,BOMB,ENLARGE,MULTIBALL,BALLSPEED,CONTROLS,GUN
     }
     
     public PowerUp(TYPE type, Vector position) {
@@ -32,6 +32,8 @@ public class PowerUp extends GroupNode<Spatial>{
         
         sprite = PongoutSprite.create(30, 60, 0, getOffset(type));
         sprite.translate(position);
+        
+        this.type = type;
         
         addChild(sprite);
         
@@ -46,6 +48,24 @@ public class PowerUp extends GroupNode<Spatial>{
         switch(type) {
             case SPEED:
                 offset = 545;
+                break;
+            case BOMB:
+                offset = 605;
+                break;
+            case ENLARGE:
+                offset = 665;
+                break;
+            case MULTIBALL:
+                offset = 725;
+                break;
+            case BALLSPEED:
+                offset = 785;
+                break;
+            case CONTROLS:
+                offset = 845;
+                break;
+            case GUN:
+                offset = 905;
                 break;
         }
         return offset;

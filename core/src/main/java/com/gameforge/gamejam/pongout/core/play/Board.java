@@ -1,5 +1,6 @@
 package com.gameforge.gamejam.pongout.core.play;
 
+import static com.gameforge.gamejam.pongout.core.play.Player.PLAYER1;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -17,10 +18,12 @@ public class Board extends GroupNode<Node> {
 	public static final float BOTTOM = OFFSET.y + DIMENSION.height;
 	public static final float LEFT = OFFSET.x;
 	public static final float RIGHT = OFFSET.x + DIMENSION.width;
+    public static final int POWERUP_DROPCHANCE = 125;
 	private ArrayList<Ball> balls;
 	private ArrayList<Ball> ballsToRemove;
     private ArrayList<Brick> bricksToRemove;
-    private ArrayList<PowerUp> powerUps;
+    private ArrayList<PowerUp> powerUpsToRemove;
+    ArrayList<PowerUp> powerUps;
 
 	Vector[] draw = { new Vector(), new Vector(), new Vector(), new Vector(),
 			new Vector() };
@@ -35,6 +38,7 @@ public class Board extends GroupNode<Node> {
 		balls = new ArrayList<Ball>();
 		ballsToRemove = new ArrayList<Ball>();
         bricksToRemove = new ArrayList<Brick>();
+        powerUpsToRemove = new ArrayList<PowerUp>();
         powerUps = new ArrayList<PowerUp>();
 
 		setDrawBoundary(true);
@@ -56,6 +60,10 @@ public class Board extends GroupNode<Node> {
         
 	}
 
+    public void spawnBall(Vector position) {
+        
+    }
+    
 	public void spawnBall() {
 		Random rand = new Random();
 		// direction
@@ -76,6 +84,22 @@ public class Board extends GroupNode<Node> {
     public void removeBrick(Brick b) {
         bricksToRemove.add(b);
     }
+    
+    public void collectPowerup(PowerUp p, Ball b) {
+        powerUpsToRemove.add(p);
+        switch(p.getType()) {
+            case ENLARGE:
+                switch(b.lastBounce) {
+                    case PLAYER1:
+                        player1Paddle.increaseSize();
+                        break;
+                    case PLAYER2:
+                        player2Paddle.increaseSize();
+                        break;
+                }
+                break;
+        }
+    }
 
 	@Override
 	public void update(float deltams) {
@@ -89,13 +113,20 @@ public class Board extends GroupNode<Node> {
         }
         ballsToRemove.clear();
         for (Brick brick: bricksToRemove) {
-            log().info("removing brick...");
             brickLayout.getChildren().remove(brick);
-            PowerUp pu = RandomPowerUpGenerator.generate(brick);
-            powerUps.add(pu);
-            addChild(pu);
+            int roll = new Random().nextInt(100);
+            if(roll < POWERUP_DROPCHANCE) {
+                PowerUp pu = RandomPowerUpGenerator.generate(brick);
+                powerUps.add(pu);
+                addChild(pu);                
+            }
         }
         bricksToRemove.clear();
+        for(PowerUp powerUp: powerUpsToRemove) {
+            powerUps.remove(powerUp);
+            getChildren().remove(powerUp);
+            //apply powerup
+        }
 		super.update(deltams);
 	}
 
