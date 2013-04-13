@@ -79,6 +79,7 @@ public class Ball extends GameObject {
 
 		// player 1 paddle
 		bouncePadde(board.player1Paddle);
+		bouncePadde(board.player2Paddle);
 
 		board.draw[0] = op.clone();
 		board.draw[1] = np.clone();
