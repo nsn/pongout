@@ -20,7 +20,7 @@ public class Paddle extends GroupNode<Spatial> {
 	public static final int MIDDLE_OFFSET = 60;
 	public static final int BOTTOM_TRANSLATION_DEFAULT = 90;
 	public static final int MIDDLE_TRANSLATION_DEFAULT = 30;
-	public static final int PADDLE_SPEED = 1;
+
 	public static final int BASEFRAME = 0;
 	public static final float FRICTION = 0.01f;
 	public static final float CURVE = 0.1f;
@@ -33,6 +33,7 @@ public class Paddle extends GroupNode<Spatial> {
 	private UserInput userInput;
 	Vector velocity = new Vector();
 	private int frameModifier;
+    private float paddleSpeed = 1.0f;
 	Player player;
 
 	Paddle(UserInput input, int frameModifier, Player p) {
@@ -86,9 +87,23 @@ public class Paddle extends GroupNode<Spatial> {
     }
     
 	public void setSpeed(float speed) {
-		setSpeed(speed);
+		paddleSpeed = speed;
 	}
 
+    public void setCurrentPowerup(PowerUp.TYPE type) {
+        switch(type) {
+            case MULTIBALL:
+                setFrame(8);
+                break;
+            case ENLARGE:
+                setFrame(6);
+                break;
+            case SPEED:
+                setFrame(2);
+                break;
+        }
+    }
+    
 	public void setFrame(int frame) {
 		top.setFrame(frame + frameModifier);
 		middle.setFrame(frame + frameModifier);
@@ -100,11 +115,11 @@ public class Paddle extends GroupNode<Spatial> {
 		super.update(deltams);
 		velocity = new Vector();
 		if (userInput.up) {
-			velocity = new Vector(0, -1 * PADDLE_SPEED * deltams);
+			velocity = new Vector(0, -1 * paddleSpeed * deltams);
 			translate(velocity);
 		}
 		if (userInput.down) {
-			velocity = new Vector(0, PADDLE_SPEED * deltams);
+			velocity = new Vector(0, paddleSpeed * deltams);
 			translate(velocity);
 		}
 	}

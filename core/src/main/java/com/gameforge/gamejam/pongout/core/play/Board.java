@@ -1,5 +1,10 @@
 package com.gameforge.gamejam.pongout.core.play;
 
+import static com.gameforge.gamejam.pongout.core.play.Player.PLAYER1;
+import static com.gameforge.gamejam.pongout.core.play.Player.PLAYER2;
+import static com.gameforge.gamejam.pongout.core.play.PowerUp.TYPE.ENLARGE;
+import static com.gameforge.gamejam.pongout.core.play.PowerUp.TYPE.MULTIBALL;
+import static com.gameforge.gamejam.pongout.core.play.PowerUp.TYPE.SPEED;
 import static playn.core.PlayN.log;
 
 import java.util.ArrayList;
@@ -90,23 +95,31 @@ public class Board extends GroupNode<Node> {
     public void collectPowerup(PowerUp p, Ball b) {
         log().info("collection powerup");
         powerUpsToRemove.add(p);
+        Paddle lastActivePaddle = null;
+        if(b.lastBounce != Player.NONE) {
+            lastActivePaddle = b.lastBounce==PLAYER1?player1Paddle:player2Paddle;
+        }
         switch(p.getType()) {
             case ENLARGE:
-                switch(b.lastBounce) {
-                    case PLAYER1:
-                        player1Paddle.increaseSize();
-                        player1Paddle.setFrame(6);
-                        break;
-                    case PLAYER2:
-                        player2Paddle.increaseSize();
-                        player2Paddle.setFrame(6);
-                        break;
+                if(lastActivePaddle != null) {
+                    lastActivePaddle.increaseSize();
+                    lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.ENLARGE);                    
                 }
                 break;
             case MULTIBALL:
                 ballsToSpawn.add(b);
+                if(lastActivePaddle != null) {
+                    lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.MULTIBALL);                
+                }
+                break;
+            case SPEED:
+                if(lastActivePaddle != null) {
+                    lastActivePaddle.setSpeed(1.5f);
+                    lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.SPEED);                    
+                }
                 break;
         }
+            
     }
 
     @Override
