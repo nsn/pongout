@@ -37,7 +37,7 @@ public class Ball extends GameObject {
 		setBoundaryColor(Color.rgb(0, 0, 255));
 	}
 
-	private void bouncePadde(Paddle paddle, boolean left) {
+	private void bouncePaddle(Paddle paddle, boolean left) {
 		BoundingRectangle r = paddle.getWorldBound();
 		float xOffset = left ? r.width : 0.0f;
 		Vector ro = new Vector(r.minX() + xOffset, r.minY());
@@ -96,9 +96,9 @@ public class Ball extends GameObject {
 			// return;
 		}
 
-		// player 1 paddle
-		bouncePadde(board.player1Paddle, true);
-		bouncePadde(board.player2Paddle, false);
+		// player paddles
+		bouncePaddle(board.player1Paddle, true);
+		bouncePaddle(board.player2Paddle, false);
 
 		board.draw[0] = op.clone();
 		board.draw[1] = np.clone();
