@@ -20,7 +20,7 @@ public class BrickLayout extends GroupNode<Spatial> {
     public BrickLayout() {
 
         Gson gson = new Gson();
-        int[][] brickLayout = gson.fromJson("[[1,3,1],[0,1,0],[1,3,1]]", int[][].class);
+        int[][] brickLayout = gson.fromJson("[[1,2,3,4,5],[0,1,0],[1,3,1]]", int[][].class);
 
         for (int i = 0; i < brickLayout.length; i++) {
             int[] row = brickLayout[i];

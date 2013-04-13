@@ -66,6 +66,10 @@ public class Paddle extends GroupNode<Spatial> {
         addChild(middle);
     }
     
+    public void setSpeed(float speed) {
+        setSpeed(speed);
+    }
+    
     @Override
     public void update(float deltams) {
         super.update(deltams);
