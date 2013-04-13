@@ -1,6 +1,9 @@
 package com.gameforge.gamejam.pongout.core.play;
 
 import static playn.core.PlayN.log;
+
+import java.util.Iterator;
+
 import playn.core.Color;
 import pythagoras.f.AffineTransform;
 import pythagoras.f.Dimension;
@@ -12,11 +15,8 @@ import pythagoras.f.Vector;
 import com.gameforge.gamejam.pongout.core.PongoutSprite;
 import com.nightspawn.sg.BoundingRectangle;
 import com.nightspawn.sg.Spatial;
-import java.util.Iterator;
-import pythagoras.f.Line;
 
 public class Ball extends GameObject {
-
     private static final float INITIAL_SPEED = 12f; // pixels per msec
     private static final Dimension DIMENSION = new Dimension(20, 20);
     private static final Vector OFFSET = new Vector(0, 420);
@@ -85,53 +85,58 @@ public class Ball extends GameObject {
         return hitSomething;
     }
     
-    private boolean bounceBrick(Brick brick) {
-        BoundingRectangle r = brick.sprite.getWorldBound();
-        boolean hitSomething = false;
-        if (op.x > r.maxX()) {
-//            log().info(String.format("right from brick %f,%f,%f,%f", r.maxX(), r.minY(), r.maxX(), r.maxY()));
-            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.maxX(), r.minY(), r.maxX(), r.maxY())) {
-//                log().info("hit brick from right");
+    private void bounceLine(Vector s, Vector e, float friction,
+            Vector velocity, float curve) {
+        Rectangle r = new Rectangle(s.x, s.y, e.x - s.x, e.y - s.y);
+        float newX = 0.0f;
+        if (Lines.linesIntersect(op.x, op.y, np.x, np.y, s.x, s.y, e.x, e.y)) {
+            log().debug("intersect");
+            Vector newDir = s.add(e.subtract(e)).crossLocal(direction);
+            log().info("penis " + direction + "  <->  " + newDir);
+            if (op.x > r.maxX()) {
+                newX = op.x - r.maxX();
+                log().debug("right " + newX);
+            }
+            if (op.x < r.minX()) {
+                newX = r.minX() - op.x;
+                log().debug("left " + newX);
+            }
+            if (op.y > r.maxY()) {
+                // log().debug("top");
+                // direction.y *= -1;
+            }
+            if (op.y < r.minX()) {
+                // log().debug("bottom");
+                // direction.y *= -1;
+            }
+            if (newX != 0.0f) {
+                transform.setTx(newX);
+                // left or right
                 direction.x *= -1;
-                transform.setTx(ob.minX() - r.x);
-                hitSomething = true;
+                // friction
+                direction.y += friction * velocity.y;
+                // curve
+                float intersectY = np.y - s.y;
+                float ratio = intersectY / (r.height * .5f) - 1;
+                direction.y += curve * ratio;
             }
-        } else if (op.y > r.maxY()) {
-//            log().info("bottom from brick");
-            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(), r.maxY(), r.maxX(), r.maxY())) {
-//                log().info("hit brick from bottom");
-                direction.y *= -1;
-                transform.setTy(ob.minY() - r.y);
-                hitSomething = true;
-            }
-        } else if (op.x < r.minX()) {
-//            log().info("left from brick");
-            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(), r.minY(), r.minX(), r.maxY())) {
-//                log().info("hit brick from left");
-                direction.x *= -1;
-                transform.setTx(r.x - ob.maxX());
-                hitSomething = true;
-            }
-        } else if (op.y < r.minY()) {
-//            log().info("top from brick");
-            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(), r.minY(), r.maxX(), r.minY())) {
-//                log().info("hit brick from top");
-                direction.y *= -1;
-                transform.setTy(r.y - ob.maxY());
-                hitSomething = true;
-            }
+            // direction = newDir.normalize();
+
+            board.draw[2] = s.clone();
+            board.draw[3] = e.clone();
         }
-        if (hitSomething) {
-            brick.removeHitpoint();
-            if (brick.isBroken()) {
-                board.removeBrick(brick);
-            }
-        }
-        
-        return hitSomething;
+
     }
 
     private void bouncePaddle(Paddle paddle, boolean left) {
+        Rectangle r = paddle.getBounceRectangle();
+        float xOffset = left ? r.width : 0.0f;
+        Vector ro = new Vector(r.minX() + xOffset, r.minY());
+        Vector rd = new Vector(r.minX() + xOffset, r.maxY());
+        bounceLine(ro, rd, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
+    }
+
+    private void bouncePaddleOld(Paddle paddle, boolean left) {
         Rectangle r = paddle.getBounceRectangle();
         float xOffset = left ? r.width : 0.0f;
         Vector ro = new Vector(r.minX() + xOffset, r.minY());
@@ -162,6 +167,9 @@ public class Ball extends GameObject {
 
             board.draw[2] = ro.clone();
             board.draw[3] = rd.clone();
+        }
+        if (op.y > rd.y) {
+
         }
 
     }
@@ -209,9 +217,10 @@ public class Ball extends GameObject {
         bouncePaddle(board.player2Paddle, false);
 
         // bricks
-        for (Iterator<Spatial> it = board.brickLayout.getChildren().iterator(); it.hasNext();) {
+        for (Iterator<Spatial> it = board.brickLayout.getChildren().iterator(); it
+                .hasNext();) {
             Brick brick = (Brick) it.next();
-            if(bounceBrick(brick)) {
+            if (bounceBrick(brick)) {
                 break;
             }
         }
@@ -237,4 +246,56 @@ public class Ball extends GameObject {
     public Point center() {
         return getWorldBound().center();
     }
+
+    private boolean bounceBrick(Brick brick) {
+        BoundingRectangle r = brick.sprite.getWorldBound();
+        boolean hitSomething = false;
+        if (op.x > r.maxX()) {
+            // log().info(String.format("right from brick %f,%f,%f,%f",
+            // r.maxX(), r.minY(), r.maxX(), r.maxY()));
+            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.maxX(),
+                    r.minY(), r.maxX(), r.maxY())) {
+                // log().info("hit brick from right");
+                direction.x *= -1;
+                transform.setTx(ob.minX() - r.x);
+                hitSomething = true;
+            }
+        } else if (op.y > r.maxY()) {
+            // log().info("bottom from brick");
+            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(),
+                    r.maxY(), r.maxX(), r.maxY())) {
+                // log().info("hit brick from bottom");
+                direction.y *= -1;
+                transform.setTy(ob.minY() - r.y);
+                hitSomething = true;
+            }
+        } else if (op.x < r.minX()) {
+            // log().info("left from brick");
+            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(),
+                    r.minY(), r.minX(), r.maxY())) {
+                // log().info("hit brick from left");
+                direction.x *= -1;
+                transform.setTx(r.x - ob.maxX());
+                hitSomething = true;
+            }
+        } else if (op.y < r.minY()) {
+            // log().info("top from brick");
+            if (Lines.linesIntersect(op.x, op.y, np.x, np.y, r.minX(),
+                    r.minY(), r.maxX(), r.minY())) {
+                // log().info("hit brick from top");
+                direction.y *= -1;
+                transform.setTy(r.y - ob.maxY());
+                hitSomething = true;
+            }
+        }
+        if (hitSomething) {
+            brick.removeHitpoint();
+            if (brick.isBroken()) {
+                board.removeBrick(brick);
+            }
+        }
+
+        return hitSomething;
+    }
+
 }
