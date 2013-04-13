@@ -53,7 +53,11 @@ public class Ball extends GameObject {
 			}
 			log().info("asdasd " + newX);
 			transform.setTx(newX);
+
+			// flat paddle
 			direction.x *= -1;
+			direction.y += Paddle.FRICTION * paddle.velocity.y;
+
 			board.draw[2] = ro.clone();
 			board.draw[3] = rd.clone();
 		}
