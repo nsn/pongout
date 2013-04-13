@@ -1,5 +1,8 @@
 package com.gameforge.gamejam.pongout.core;
 
+import static com.gameforge.gamejam.pongout.core.GameState.STATE.RESULT;
+import com.gameforge.gamejam.pongout.core.play.ImageStore;
+import com.gameforge.gamejam.pongout.core.play.LoadingState;
 import static playn.core.PlayN.graphics;
 import playn.core.Game;
 import playn.core.ImmediateLayer;
@@ -8,6 +11,8 @@ import pythagoras.f.Rectangle;
 
 import com.gameforge.gamejam.pongout.core.play.PlayState;
 import com.gameforge.gamejam.pongout.core.play.ResultState;
+import playn.core.AssetWatcher;
+import playn.core.AssetWatcher.Listener;
 import playn.core.Image;
 import static playn.core.PlayN.assets;
 
@@ -22,9 +27,10 @@ public class PongOut implements Game {
 	public void init() {
 		graphics().ctx().setSize(SCREENWIDTH, SCREENHEIGHT);
 
-        Image backgroundImage = assets().getImage("images/background.jpg");
+        final Image backgroundImage = assets().getImage("images/background.jpg");
+        final Image spritesheetImage = assets().getImage("images/spritesheet.png");
         graphics().rootLayer().add(graphics().createImageLayer(backgroundImage));
-        
+
 		ImmediateLayer gameLayer = graphics().createImmediateLayer(SCREENWIDTH,
 				SCREENHEIGHT, new ImmediateLayer.Renderer() {
 					@Override
@@ -37,7 +43,26 @@ public class PongOut implements Game {
 		graphics().rootLayer().add(gameLayer);
 
         renderer = new PlayNRenderer();
-		changeState(GameState.STATE.PLAY);
+        
+        AssetWatcher assetWatcher = new AssetWatcher(new Listener() {
+
+            @Override
+            public void done() {
+                ImageStore.getInstance().addImage("spritesheet", spritesheetImage);
+                ImageStore.getInstance().addImage("background", backgroundImage);
+        		changeState(GameState.STATE.PLAY);
+            }
+
+            @Override
+            public void error(Throwable e) {
+            }
+            
+        });
+        assetWatcher.add(backgroundImage);
+        assetWatcher.add(spritesheetImage);
+        assetWatcher.start();
+        
+        changeState(GameState.STATE.LOADING);
         
 	}
 
@@ -49,6 +74,9 @@ public class PongOut implements Game {
         case RESULT:
             changeState(new ResultState(renderer, this));
             break;
+        case LOADING:
+            changeState(new LoadingState(renderer, this));
+            break;            
 		default:
 			throw new IllegalArgumentException("unable to switch to "
 					+ newState);

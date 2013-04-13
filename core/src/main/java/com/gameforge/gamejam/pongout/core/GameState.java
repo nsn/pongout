@@ -25,6 +25,6 @@ public abstract class GameState {
 	public abstract void update(float delta);
 
 	public enum STATE {
-		PLAY, TEST, RESULT
+		PLAY, TEST, RESULT, LOADING
 	}
 }

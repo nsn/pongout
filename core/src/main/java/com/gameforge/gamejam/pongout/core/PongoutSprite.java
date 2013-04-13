@@ -1,5 +1,6 @@
 package com.gameforge.gamejam.pongout.core;
 
+import com.gameforge.gamejam.pongout.core.play.ImageStore;
 import static playn.core.PlayN.assets;
 import playn.core.Image;
 import pythagoras.f.Dimension;
@@ -8,7 +9,7 @@ import pythagoras.f.Vector;
 import com.nightspawn.sg.Sprite;
 
 public class PongoutSprite extends Sprite<Image> {
-	public static final String SPRITESHEET = "images/spritesheet.png";
+	public static final String SPRITESHEET = "spritesheet";
 
 	public PongoutSprite(Image texture, Dimension d) {
 		super(texture, d);
@@ -19,11 +20,11 @@ public class PongoutSprite extends Sprite<Image> {
 	}
 
 	public PongoutSprite(Dimension d) {
-		super(assets().getImage(SPRITESHEET), d);
+		super(ImageStore.getInstance().getImage(SPRITESHEET), d);
 	}
 
 	public PongoutSprite(Dimension d, Vector offset) {
-		super(assets().getImage(SPRITESHEET), d, offset);
+		super(ImageStore.getInstance().getImage(SPRITESHEET), d, offset);
 	}
 
 	public static PongoutSprite create(float w, float h) {
@@ -31,7 +32,7 @@ public class PongoutSprite extends Sprite<Image> {
 	}
 
 	public static PongoutSprite create(float w, float h, float xoff, float yoff) {
-		Image t = assets().getImage(SPRITESHEET);
+        Image t = ImageStore.getInstance().getImage(SPRITESHEET);
 		Dimension dims = new Dimension(w, h);
 		Vector offset = new Vector(xoff, yoff);
 
