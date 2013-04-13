@@ -5,6 +5,7 @@ import static playn.core.PlayN.log;
 import java.util.ArrayList;
 
 import playn.core.Color;
+import pythagoras.f.AffineTransform;
 import pythagoras.f.Dimension;
 import pythagoras.f.Lines;
 import pythagoras.f.Ray2;
@@ -49,7 +50,7 @@ public class Board extends GroupNode<Node> {
 		// position
 		Vector pos = new Vector(320, 150);
 
-		Ball b = new Ball(dir);
+		Ball b = new Ball(this, dir);
 		b.setTranslation(pos);
 
 		balls.add(b);
@@ -65,6 +66,7 @@ public class Board extends GroupNode<Node> {
 			BoundingRectangle nb = b.getWorldBound();
 			Vector op = new Vector(ob.center().x, ob.center().y);
 			Vector np = new Vector(b.center().x, b.center().y);
+			AffineTransform t = b.transform;
 
 			Vector intersection = new Vector();
 			// player 1 paddle
@@ -80,8 +82,15 @@ public class Board extends GroupNode<Node> {
 
 			if (Lines.linesIntersect(op.x, op.y, np.x, np.y, ro.x, ro.y, rd.x,
 					rd.y)) {
-				log().info("INTERSERCT!");
+
+				float dist = ob.minX() - ro.x + 100;
+				// log().info("dista " + dist);
+				// b.direction.x *= -1;
+				// log().info("interset! " + b.direction.x);
+				// t.setTx(dist);
 			}
+
+			// b.transform(t);
 		}
 
 	}
