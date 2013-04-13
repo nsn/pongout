@@ -68,9 +68,9 @@ public class Board extends GroupNode<Node> {
         Vector pos = new Vector(320, 138);
         // pos = new Vector(320, 228);
         // pos = new Vector(320, 183);
-        pos = new Vector(320, 210);
+        // pos = new Vector(320, 210);
         // pos = new Vector(920, 233);
-        // pos = new Vector(920, 143);
+        pos = new Vector(920, 143);
         // pos = new Vector(920, 163);
 
         b.setTranslation(pos);

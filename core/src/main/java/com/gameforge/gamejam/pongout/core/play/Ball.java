@@ -19,7 +19,7 @@ import com.nightspawn.sg.BoundingRectangle;
 import com.nightspawn.sg.Spatial;
 
 public class Ball extends GameObject {
-    private static final float INITIAL_SPEED = 12f; // pixels per msec
+    private static final float INITIAL_SPEED = 7f; // pixels per msec
     private static final Dimension DIMENSION = new Dimension(20, 20);
     private static final Vector OFFSET = new Vector(0, 420);
     private float speed; // pixels/ms
@@ -45,7 +45,7 @@ public class Ball extends GameObject {
         setBoundaryColor(Color.rgb(0, 0, 255));
     }
 
-    private void bounceLine(Vector s, Vector e, float friction,
+    private boolean bounceLine(Vector s, Vector e, float friction,
             Vector velocity, float curve) {
         if (Lines.linesIntersect(op.x, op.y, np.x, np.y, s.x, s.y, e.x, e.y)) {
             log().debug("intersect");
@@ -53,7 +53,7 @@ public class Ball extends GameObject {
             Ray2 movement = new Ray2(op, np.subtract(op).normalize());
             Vector intersection = new Vector();
             if (!movement.getIntersection(s, e, intersection))
-                return;
+                return false;
 
             // direction
             Vector normal = new Vector((s.y - e.y) * -1, s.x - e.x).normalize();
@@ -66,16 +66,6 @@ public class Ball extends GameObject {
             float ratio = s.distance(intersection) / s.distance(e) * 2.0f - 1;
             direction.y += curve * ratio;
 
-            // float intersectY = np.y - ro.y;
-            // float ratio = intersectY / (r.height * .5f) - 1;
-            // direction.y += Paddle.CURVE * ratio;
-
-            // float dist = intersection.distance(op);
-            // log().info("distance " + dist);
-            // if (dist > 0.0f) {
-            // direction.scaleLocal(-1);
-            // }
-
             transform.setTx(op.x - intersection.x);
             transform.setTy(op.y - intersection.y);
 
@@ -86,8 +76,9 @@ public class Ball extends GameObject {
             board.draw[5] = intersection.clone();
             board.draw[6] = intersection.add(normal.scale(speed));
 
+            return true;
         }
-
+        return false;
     }
 
     private void bouncePaddle(Paddle paddle, boolean left) {
@@ -104,48 +95,6 @@ public class Ball extends GameObject {
         bounceLine(ro, rd, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
         bounceLine(te, ro, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
         bounceLine(rd, be, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
-        if (paddle.player == Player.PLAYER1) {
-            board.draw[2] = ro.clone();
-            board.draw[3] = te.clone();
-        }
-
-    }
-
-    private void bouncePaddleOld(Paddle paddle, boolean left) {
-        Rectangle r = paddle.getBounceRectangle();
-        float xOffset = left ? r.width : 0.0f;
-        Vector ro = new Vector(r.minX() + xOffset, r.minY());
-        Vector rd = new Vector(r.minX() + xOffset, r.maxY());
-
-        if (Lines
-                .linesIntersect(op.x, op.y, np.x, np.y, ro.x, ro.y, rd.x, rd.y)) {
-            float newX;
-            if (left) {
-                newX = ob.minX() - r.x;
-            } else {
-                newX = r.x - ob.maxX();
-            }
-            transform.setTx(newX);
-
-            // flat paddle
-            direction.x *= -1;
-            // friction
-            direction.y += Paddle.FRICTION * paddle.velocity.y;
-            // rounded paddle
-            float intersectY = np.y - ro.y;
-            float ratio = intersectY / (r.height * .5f) - 1;
-            direction.y += Paddle.CURVE * ratio;
-
-            direction.normalizeLocal();
-
-            lastBounce = paddle.player;
-
-            board.draw[2] = ro.clone();
-            board.draw[3] = rd.clone();
-        }
-        if (op.y > rd.y) {
-
-        }
 
     }
 
@@ -200,18 +149,11 @@ public class Ball extends GameObject {
             }
         }
 
-        // board.draw[0] = op.clone();
-        // board.draw[1] = np.clone();
-        // board.draw[2] = ro.clone();
-        // board.draw[3] = rd.clone();
-        // board.draw[4] = intersection.clone();
-
         transform(transform);
         if (MathUtil.epsilonEquals(direction.x, 0.0f)) {
-            direction.x += 0.001f;
-            direction.negateLocal();
+            direction.x += 0.02f;
         }
-
+        direction.normalizeLocal();
         super.update(delta);
     }
 
