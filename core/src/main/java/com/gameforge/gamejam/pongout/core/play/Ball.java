@@ -29,7 +29,7 @@ public class Ball extends GameObject {
 	}
 
 	public void update(float delta) {
-		super.update(delta);
+		oldBoundingRectangle = getWorldBound().clone();
 
 		Vector dist = direction.scale(speed);
 
@@ -52,6 +52,7 @@ public class Ball extends GameObject {
 		}
 
 		transform(trans);
+		super.update(delta);
 	}
 
 	public Point center() {

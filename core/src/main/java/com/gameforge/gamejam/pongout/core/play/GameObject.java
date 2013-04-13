@@ -11,7 +11,6 @@ public class GameObject extends GroupNode<Node> {
 	public void update(float deltaMs) {
 		super.update(deltaMs);
 		// store old worldbound
-		oldBoundingRectangle = getWorldBound().clone();
-	}
 
+	}
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import playn.core.Color;
 import pythagoras.f.Dimension;
+import pythagoras.f.Lines;
 import pythagoras.f.Ray2;
 import pythagoras.f.Rectangle;
 import pythagoras.f.Vector;
@@ -43,10 +44,10 @@ public class Board extends GroupNode<Node> {
 
 	public void spawnBall() {
 		// direction
-		Vector dir = new Vector(0.1f, -1);
+		Vector dir = new Vector(-0.1f, 0.0f);
 
 		// position
-		Vector pos = new Vector(200, 200);
+		Vector pos = new Vector(320, 150);
 
 		Ball b = new Ball(dir);
 		b.setTranslation(pos);
@@ -58,6 +59,30 @@ public class Board extends GroupNode<Node> {
 	@Override
 	public void update(float deltams) {
 		super.update(deltams);
+
+		for (Ball b : balls) {
+			BoundingRectangle ob = b.oldBoundingRectangle;
+			BoundingRectangle nb = b.getWorldBound();
+			Vector op = new Vector(ob.center().x, ob.center().y);
+			Vector np = new Vector(b.center().x, b.center().y);
+
+			Vector intersection = new Vector();
+			// player 1 paddle
+			BoundingRectangle r = player1Paddle.getWorldBound();
+			Vector ro = new Vector(r.maxX(), r.minY());
+			Vector rd = new Vector(r.maxX(), r.maxY());
+
+			draw[0] = op.clone();
+			draw[1] = np.clone();
+			draw[2] = ro.clone();
+			draw[3] = rd.clone();
+			draw[4] = intersection.clone();
+
+			if (Lines.linesIntersect(op.x, op.y, np.x, np.y, ro.x, ro.y, rd.x,
+					rd.y)) {
+				log().info("INTERSERCT!");
+			}
+		}
 
 	}
 
@@ -75,22 +100,6 @@ public class Board extends GroupNode<Node> {
 		for (Ball b : balls) {
 			BoundingRectangle ob = b.oldBoundingRectangle;
 			BoundingRectangle nb = b.getWorldBound();
-			// hit upper or lower bounds
-			if (nb.minY() < r.minY()) {
-				float newY = ob.minY() - r.minY();
-				b.translate(new Vector(0.0f, newY));
-				// t.setTy(newY);
-				log().info("penis!");
-				b.direction.y *= -1;
-			}
-
-			if (nb.maxY() >= r.maxY()) {
-				// float newY = r.maxY() - ob.maxY(); //
-				// t.setTy(newY);
-				log().info("arsch!");
-				b.direction.y *= -1;
-			}
-
 			Vector op = new Vector(b.oldBoundingRectangle.center().x,
 					b.oldBoundingRectangle.center().y);
 			Vector np = new Vector(b.center().x, b.center().y);
