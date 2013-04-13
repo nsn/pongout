@@ -12,6 +12,8 @@ import pythagoras.f.Vector;
 import com.nightspawn.sg.BoundingRectangle;
 import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Node;
+import java.util.Iterator;
+import java.util.Random;
 
 public class Board extends GroupNode<Node> {
 	public static final Vector OFFSET = new Vector(0.0f, 48.0f);
@@ -41,11 +43,14 @@ public class Board extends GroupNode<Node> {
 	}
 
 	public void spawnBall() {
+        
+        Random rand = new Random();
+        
 		// direction
-		Vector dir = new Vector(0.1f, -1);
+		Vector dir = new Vector(rand.nextFloat() - 0.5f, -1);
 
 		// position
-		Vector pos = new Vector(200, 200);
+		Vector pos = new Vector(600, 200);
 
 		Ball b = new Ball(dir);
 		b.setTranslation(pos);
@@ -69,12 +74,19 @@ public class Board extends GroupNode<Node> {
 
 	@Override
 	public void update(float deltams) {
-		super.update(deltams);
+        // spawn ball if there are no balls left
+        if(balls.isEmpty()) {
+            spawnBall();
+        }
+
+        super.update(deltams);
 		// my bounds
 		Rectangle r = new Rectangle(OFFSET.x, OFFSET.y, DIMENSION.width,
 				DIMENSION.height);
+        
 		// move balls
-		for (Ball b : balls) {
+        for (Iterator<Ball> bIt = balls.iterator(); bIt.hasNext();) {
+            Ball b = bIt.next();
 			AffineTransform t = b.trans;
 			BoundingRectangle ob = b.getWorldBound();
 			Vector op = new Vector(ob.x, ob.y);
@@ -111,6 +123,20 @@ public class Board extends GroupNode<Node> {
 			// }
 			// hit paddles?
 			b.transform(t);
+            
+            
+            //hit left or right boundaries?
+            if(nb.x < 0) {
+                scores.removePointForPlayer1();
+                bIt.remove();
+                getChildren().remove(b);
+            }
+
+            if(nb.x > DIMENSION.width) {
+                scores.removePointForPlayer2();
+                bIt.remove();
+                getChildren().remove(b);
+            }
 		}
 
 	}
