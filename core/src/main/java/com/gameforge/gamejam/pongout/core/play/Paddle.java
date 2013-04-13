@@ -102,6 +102,9 @@ public class Paddle extends GroupNode<Spatial> {
         case CONTROLS:
             setFrame(12);
             break;
+        case BOMB:
+            setFrame(4);
+            break;
         }
     }
 

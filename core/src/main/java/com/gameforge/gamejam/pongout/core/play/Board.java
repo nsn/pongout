@@ -138,6 +138,13 @@ public class Board extends GroupNode<Node> {
                 lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.BALLSPEED);
             }
             increaseBallSpeed = true;
+            break;
+        case BOMB:
+            if(lastActivePaddle != null) {
+                lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.BOMB);
+            }
+            b.isBomb = true;
+            break;
         }
 
     }

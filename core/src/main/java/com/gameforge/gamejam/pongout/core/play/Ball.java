@@ -32,6 +32,7 @@ public class Ball extends GameObject {
     Board board;
     Player lastBounce = Player.NONE;
     private PongoutSprite sprite;
+    boolean isBomb = false;
 
     Ball(Board board, Vector direction) {
         this.board = board;
@@ -220,6 +221,10 @@ public class Ball extends GameObject {
     }
 
     private boolean bounceBrick(Brick brick) {
+        
+        Vector oldDirection = direction;
+        AffineTransform oldTransform = transform;
+        
         BoundingRectangle r = brick.sprite.getWorldBound();
         boolean hitSomething = false;
         if (op.x > r.maxX()) {
@@ -232,6 +237,10 @@ public class Ball extends GameObject {
             hitSomething = hitSomething || bounceLine(new Vector(r.minX(), r.minY()), new Vector(r.maxX(), r.minY()), 1f);
         }
         if (hitSomething) {
+            if(isBomb) {
+                direction = oldDirection;
+                transform = oldTransform;
+            }
             brick.removeHitpoint();
             if (brick.isBroken()) {
                 board.removeBrick(brick);
