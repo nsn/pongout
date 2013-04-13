@@ -1,11 +1,13 @@
 package com.gameforge.gamejam.pongout.core.play;
 
+import static playn.core.PlayN.log;
+
 import java.util.ArrayList;
 
 import playn.core.Color;
 import pythagoras.f.AffineTransform;
 import pythagoras.f.Dimension;
-import pythagoras.f.MathUtil;
+import pythagoras.f.Ray2;
 import pythagoras.f.Rectangle;
 import pythagoras.f.Vector;
 
@@ -17,7 +19,8 @@ public class Board extends GroupNode<Node> {
 	public static final Vector OFFSET = new Vector(0.0f, 48.0f);
 	public static final Dimension DIMENSION = new Dimension(1280, 730);
 	private ArrayList<Ball> balls;
-	Vector[] draw = { new Vector(), new Vector(), new Vector() };
+	Vector[] draw = { new Vector(), new Vector(), new Vector(), new Vector(),
+			new Vector() };
 	Paddle player1Paddle;
 	Paddle player2Paddle;
 
@@ -50,25 +53,15 @@ public class Board extends GroupNode<Node> {
 		addChild(b);
 	}
 
-	private Vector intersect(Vector p1, Vector p2, Vector p3, Vector p4) {
-		float d = ((p1.x - p2.x) * (p3.y - p4.y))
-				- ((p1.y - p2.y) * (p3.x - p4.x));
-		if (MathUtil.epsilonEquals(d, 0.0f)) {
-			// If parallel, defaults to the average location of the
-			return new Vector(p1.x + p3.x, p1.y + p3.y).scale(.5f);
-		}
-		float a = (p1.x * p2.y) - (p1.y * p2.x);
-		float b = (p3.x * p4.y) - (p3.y * p4.x);
-		return new Vector(((a * (p3.x - p4.x)) - ((p1.x - p2.x) * b)) / d,
-				((a * (p3.y - p4.y)) - ((p1.y - p2.y) * b)) / d);
-	}
-
 	@Override
 	public void update(float deltams) {
 		super.update(deltams);
 		// my bounds
 		Rectangle r = new Rectangle(OFFSET.x, OFFSET.y, DIMENSION.width,
 				DIMENSION.height);
+		Vector tl = new Vector(OFFSET.x, OFFSET.y);
+		Vector tr = new Vector(OFFSET.x + DIMENSION.width, OFFSET.y);
+		Ray2 upper = new Ray2(tl, new Vector(1, 0));
 		// move balls
 		for (Ball b : balls) {
 			AffineTransform t = b.trans;
@@ -76,6 +69,45 @@ public class Board extends GroupNode<Node> {
 			Vector op = new Vector(ob.x, ob.y);
 			BoundingRectangle nb = b.newBoundingRectangle;
 			Vector np = new Vector(nb.x, nb.y);
+
+			Ray2 mov;
+			Vector intersection;
+
+			// test?
+			// Vector o1 = new Vector(0, 100);
+			// Vector d1 = new Vector(500, 100);
+			// Vector o2 = new Vector(100, 0);
+			// Vector d2 = new Vector(100, 200);
+			// mov = new Ray2(o1, d1.subtract(o1).normalize());
+			// intersection = new Vector();
+			// if (mov.getIntersection(o2, d2, intersection)) {
+			// draw[0] = o1.clone();
+			// draw[1] = d1.clone();
+			// draw[2] = o2.clone();
+			// draw[3] = d2.clone();
+			// draw[4] = intersection.clone();
+			//
+			// // log().debug("intersection " + intersection);
+			// // float dist = intersection.distance(op);
+			// // float len = np.distance(op);
+			// // log().debug("aasd " + len + " " + dist);
+			// }
+
+			intersection = new Vector();
+			// upper?
+			if (upper.getIntersection(op, np, intersection)) {
+				draw[0] = op.clone();
+				draw[1] = np.clone();
+				draw[2] = tl.clone();
+				draw[3] = tr.clone();
+				draw[4] = intersection.clone();
+
+				float dist = intersection.distance(op);
+				float len = np.distance(op);
+				float ratio = 1 - (dist / len);
+
+				log().debug("aasd " + len + " " + dist + " " + ratio);
+			}
 
 			// hit upper or lower bounds
 			if (nb.minY() <= r.minY()) {
@@ -86,7 +118,7 @@ public class Board extends GroupNode<Node> {
 
 			if (nb.maxY() >= r.maxY()) {
 				float newY = r.maxY() - ob.maxY();
-				t.setTy(newY);
+				// t.setTy(newY);
 				b.direction.y *= -1;
 			}
 

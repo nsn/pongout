@@ -2,9 +2,11 @@ package com.gameforge.gamejam.pongout.core.play;
 
 import static playn.core.PlayN.keyboard;
 import static playn.core.PlayN.log;
+import playn.core.Color;
 import playn.core.Key;
 import playn.core.Surface;
 import pythagoras.f.Rectangle;
+import pythagoras.f.Vector;
 
 import com.gameforge.gamejam.pongout.core.GameState;
 import com.gameforge.gamejam.pongout.core.InputListenerList;
@@ -65,15 +67,17 @@ public class PlayState extends GameState {
 	public void paint(Surface surface, Rectangle renderRect, float alpha) {
 		renderer.render(scene, renderRect, surface, alpha);
 
-		// surface.setTransform(1, 0, 0, 1, 0, 0);
-		// surface.drawLine(0, Board.OFFSET.y, Board.DIMENSION.width,
-		// Board.OFFSET.y, 1);
-		// surface.setFillColor(Color.rgb(255, 0, 0));
-		// surface.fillRect(board.draw[0].x, board.draw[0].y, 5, 5);
-		// surface.setFillColor(Color.rgb(0, 255, 0));
-		// surface.fillRect(board.draw[1].x, board.draw[1].y, 5, 5);
-		// surface.setFillColor(Color.rgb(0, 0, 255));
-		// surface.fillRect(board.draw[2].x, board.draw[2].y, 5, 5);
+		surface.setTransform(1, 0, 0, 1, 0, 0);
+
+		renderRay(surface, board.draw[0], board.draw[1], Color.rgb(255, 0, 0));
+		renderRay(surface, board.draw[2], board.draw[3], Color.rgb(0, 255, 0));
+		surface.setFillColor(Color.rgb(255, 255, 255));
+		surface.fillRect(board.draw[4].x - 1, board.draw[4].y - 1, 3, 3);
+	}
+
+	private void renderRay(Surface surface, Vector p1, Vector p2, int color) {
+		surface.setFillColor(color);
+		surface.drawLine(p1.x, p1.y, p2.x, p2.y, 1);
 	}
 
 	@Override
