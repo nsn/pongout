@@ -19,7 +19,7 @@ import com.nightspawn.sg.BoundingRectangle;
 import com.nightspawn.sg.Spatial;
 
 public class Ball extends GameObject {
-    private static final float INITIAL_SPEED = 7f; // pixels per msec
+    private static final float INITIAL_SPEED = 12f; // pixels per msec
     private static final Dimension DIMENSION = new Dimension(20, 20);
     private static final Vector OFFSET = new Vector(0, 420);
     private float speed; // pixels/ms

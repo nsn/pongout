@@ -1,6 +1,7 @@
 package com.gameforge.gamejam.pongout.core.play;
 
 import playn.core.Color;
+import pythagoras.f.AffineTransform;
 import pythagoras.f.Rectangle;
 import pythagoras.f.Vector;
 
@@ -29,7 +30,6 @@ public class Paddle extends GroupNode<Spatial> {
     private PongoutSprite bottom;
     private PongoutSprite middle;
     private UserInput userInput;
-    Vector velocity = new Vector();
     private int frameModifier;
     private float paddleSpeed = 1.0f;
     Player player;
@@ -111,15 +111,28 @@ public class Paddle extends GroupNode<Spatial> {
     @Override
     public void update(float deltams) {
         super.update(deltams);
-        velocity = new Vector();
+        float velocity = 0.0f;
+        AffineTransform transform = new AffineTransform();
         if (userInput.up) {
-            velocity = new Vector(0, -1 * paddleSpeed * deltams);
-            translate(velocity);
+            velocity = -1;
         }
         if (userInput.down) {
-            velocity = new Vector(0, paddleSpeed * deltams);
-            translate(velocity);
+            velocity = 1;
         }
+        velocity *= paddleSpeed * deltams;
+        transform.setTy(velocity);
+
+        BoundingRectangle ob = getWorldBound();
+        BoundingRectangle nb = ob.translate(transform);
+
+        if (nb.minY() <= Board.TOP) {
+            transform.setTy(ob.minY() - Board.TOP);
+        }
+        if (nb.maxY() >= Board.BOTTOM) {
+            transform.setTy(Board.BOTTOM - ob.maxY());
+        }
+
+        transform(transform);
     }
 
     public Rectangle getBounceRectangle() {

@@ -16,6 +16,7 @@ import com.nightspawn.sg.Node;
 public class Board extends GroupNode<Node> {
     public static final Vector OFFSET = new Vector(0.0f, 48.0f);
     public static final Dimension DIMENSION = new Dimension(1280, 730);
+    public static final float TOP = OFFSET.y;
     public static final float BOTTOM = OFFSET.y + DIMENSION.height;
     public static final float LEFT = OFFSET.x;
     public static final float RIGHT = OFFSET.x + DIMENSION.width;
@@ -92,8 +93,9 @@ public class Board extends GroupNode<Node> {
         powerUpsToRemove.add(p);
         Paddle lastActivePaddle = null;
         log().info("last bounce is " + b.lastBounce.name());
-        if(b.lastBounce != Player.NONE) {
-            lastActivePaddle = b.lastBounce==PLAYER1?player1Paddle:player2Paddle;
+        if (b.lastBounce != Player.NONE) {
+            lastActivePaddle = b.lastBounce == PLAYER1 ? player1Paddle
+                    : player2Paddle;
         }
         switch (p.getType()) {
         case ENLARGE:
