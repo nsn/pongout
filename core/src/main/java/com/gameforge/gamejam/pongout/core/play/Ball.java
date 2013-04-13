@@ -92,8 +92,7 @@ public class Ball extends GameObject {
         return hitSomething;
     }
 
-    private boolean bounceLine(Vector s, Vector e, float friction,
-            Vector velocity, float curve) {
+    private boolean bounceLine(Vector s, Vector e, float curve) {
         if (Lines.linesIntersect(op.x, op.y, np.x, np.y, s.x, s.y, e.x, e.y)) {
             log().debug("intersect");
             // intersection
@@ -139,9 +138,9 @@ public class Ball extends GameObject {
         Vector te = new Vector(ro.x + (Paddle.PADDLE_WIDTH * .5f * ed), ro.y
                 - (Paddle.PADDLE_WIDTH * .5f));
 
-        bounceLine(ro, rd, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
-        bounceLine(te, ro, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
-        bounceLine(rd, be, Paddle.FRICTION, paddle.velocity, Paddle.CURVE);
+        bounceLine(ro, rd, Paddle.CURVE);
+        bounceLine(te, ro, Paddle.CURVE);
+        bounceLine(rd, be, Paddle.CURVE);
 
     }
 

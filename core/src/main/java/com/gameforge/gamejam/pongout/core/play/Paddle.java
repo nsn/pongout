@@ -10,7 +10,6 @@ import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Spatial;
 
 public class Paddle extends GroupNode<Spatial> {
-    // public static final int PADDLE_SPEED = 1;
     public static final int PADDLE_WIDTH = 30;
     public static final int TOP_OFFSET = 0;
     public static final int BOTTOM_OFFSET = 30;
@@ -22,7 +21,6 @@ public class Paddle extends GroupNode<Spatial> {
     public static final int MIDDLE_TRANSLATION_DEFAULT = 30;
 
     public static final int BASEFRAME = 0;
-    public static final float FRICTION = 0.01f;
     public static final float CURVE = 0.5f;
     public static final float BOUNCE_SUB = 10.0f;
     public static final int SIZE_INCREASE = 60;
