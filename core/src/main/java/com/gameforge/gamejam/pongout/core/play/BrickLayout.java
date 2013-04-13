@@ -4,12 +4,15 @@
  */
 package com.gameforge.gamejam.pongout.core.play;
 
-import com.google.gson.Gson;
+import playn.core.Json;
+import playn.core.Json.Array;
+import playn.core.PlayN;
+
 import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Spatial;
 
 /**
- *
+ * 
  * @author sascha
  */
 public class BrickLayout extends GroupNode<Spatial> {
@@ -18,22 +21,22 @@ public class BrickLayout extends GroupNode<Spatial> {
     private static final int BASEY = 100;
 
     public BrickLayout() {
+        Json.Array arr = PlayN
+                .json()
+                .parseArray(
+                        "[[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1]]");
 
-        Gson gson = new Gson();
-        int[][] brickLayout = gson.fromJson("[[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1]]", int[][].class);
-        //int[][] brickLayout = gson.fromJson("[[5]]", int[][].class);
-
-        for (int i = 0; i < brickLayout.length; i++) {
-            int[] row = brickLayout[i];
-            for (int j = 0; j < row.length; j++) {
-                int hitpoints = row[j];
-                if(hitpoints > 0) {
+        for (int i = 0; i < arr.length(); i++) {
+            Array row = arr.getArray(i);
+            for (int j = 0; j < row.length(); j++) {
+                int hitpoints = row.getInt(j);
+                if (hitpoints > 0) {
                     Brick brick = new Brick(j, i, BASEX, BASEY, hitpoints);
-                    addChild(brick);                    
+                    addChild(brick);
                 }
             }
         }
 
     }
-    
+
 }
