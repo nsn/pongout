@@ -1,20 +1,19 @@
 package com.gameforge.gamejam.pongout.core;
 
-import static com.gameforge.gamejam.pongout.core.GameState.STATE.RESULT;
-import com.gameforge.gamejam.pongout.core.play.ImageStore;
-import com.gameforge.gamejam.pongout.core.play.LoadingState;
+import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
+import playn.core.AssetWatcher;
+import playn.core.AssetWatcher.Listener;
 import playn.core.Game;
+import playn.core.Image;
 import playn.core.ImmediateLayer;
 import playn.core.Surface;
 import pythagoras.f.Rectangle;
 
+import com.gameforge.gamejam.pongout.core.play.ImageStore;
+import com.gameforge.gamejam.pongout.core.play.LoadingState;
 import com.gameforge.gamejam.pongout.core.play.PlayState;
 import com.gameforge.gamejam.pongout.core.play.ResultState;
-import playn.core.AssetWatcher;
-import playn.core.AssetWatcher.Listener;
-import playn.core.Image;
-import static playn.core.PlayN.assets;
 
 public class PongOut implements Game {
 	public static final int SCREENWIDTH = 1280;
@@ -27,9 +26,12 @@ public class PongOut implements Game {
 	public void init() {
 		graphics().ctx().setSize(SCREENWIDTH, SCREENHEIGHT);
 
-        final Image backgroundImage = assets().getImage("images/background.jpg");
-        final Image spritesheetImage = assets().getImage("images/spritesheet.png");
-        graphics().rootLayer().add(graphics().createImageLayer(backgroundImage));
+		final Image backgroundImage = assets()
+				.getImage("images/background.jpg");
+		final Image spritesheetImage = assets().getImage(
+				"images/spritesheet.png");
+		graphics().rootLayer()
+				.add(graphics().createImageLayer(backgroundImage));
 
 		ImmediateLayer gameLayer = graphics().createImmediateLayer(SCREENWIDTH,
 				SCREENHEIGHT, new ImmediateLayer.Renderer() {
@@ -42,28 +44,30 @@ public class PongOut implements Game {
 
 		graphics().rootLayer().add(gameLayer);
 
-        renderer = new PlayNRenderer();
-        
-        AssetWatcher assetWatcher = new AssetWatcher(new Listener() {
+		renderer = new PlayNRenderer();
 
-            @Override
-            public void done() {
-                ImageStore.getInstance().addImage("spritesheet", spritesheetImage);
-                ImageStore.getInstance().addImage("background", backgroundImage);
-        		changeState(GameState.STATE.PLAY);
-            }
+		AssetWatcher assetWatcher = new AssetWatcher(new Listener() {
 
-            @Override
-            public void error(Throwable e) {
-            }
-            
-        });
-        assetWatcher.add(backgroundImage);
-        assetWatcher.add(spritesheetImage);
-        assetWatcher.start();
-        
-        changeState(GameState.STATE.LOADING);
-        
+			@Override
+			public void done() {
+				ImageStore.getInstance().addImage("spritesheet",
+						spritesheetImage);
+				ImageStore.getInstance()
+						.addImage("background", backgroundImage);
+				changeState(GameState.STATE.PLAY);
+			}
+
+			@Override
+			public void error(Throwable e) {
+			}
+
+		});
+		assetWatcher.add(backgroundImage);
+		assetWatcher.add(spritesheetImage);
+		assetWatcher.start();
+
+		changeState(GameState.STATE.LOADING);
+
 	}
 
 	public void changeState(GameState.STATE newState) {
@@ -71,12 +75,12 @@ public class PongOut implements Game {
 		case PLAY:
 			changeState(new PlayState(renderer, this));
 			break;
-        case RESULT:
-            changeState(new ResultState(renderer, this));
-            break;
-        case LOADING:
-            changeState(new LoadingState(renderer, this));
-            break;            
+		case RESULT:
+			changeState(new ResultState(renderer, this));
+			break;
+		case LOADING:
+			changeState(new LoadingState(renderer, this));
+			break;
 		default:
 			throw new IllegalArgumentException("unable to switch to "
 					+ newState);
@@ -103,6 +107,6 @@ public class PongOut implements Game {
 
 	@Override
 	public int updateRate() {
-		return 25;
+		return 0;
 	}
 }
