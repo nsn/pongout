@@ -37,17 +37,25 @@ public class Ball extends GameObject {
 		setBoundaryColor(Color.rgb(0, 0, 255));
 	}
 
-	private void bouncePadde(Paddle paddle) {
+	private void bouncePadde(Paddle paddle, boolean left) {
 		BoundingRectangle r = paddle.getWorldBound();
-		Vector ro = new Vector(r.maxX(), r.minY());
-		Vector rd = new Vector(r.maxX(), r.maxY());
+		float xOffset = left ? r.width : 0.0f;
+		Vector ro = new Vector(r.minX() + xOffset, r.minY());
+		Vector rd = new Vector(r.minX() + xOffset, r.maxY());
 
 		if (Lines
 				.linesIntersect(op.x, op.y, np.x, np.y, ro.x, ro.y, rd.x, rd.y)) {
-			log().info("asdasd");
-			float newX = ob.minX() - ro.x;
+			float newX;
+			if (left) {
+				newX = ob.minX() - r.x;
+			} else {
+				newX = r.x - ob.maxX();
+			}
+			log().info("asdasd " + newX);
 			transform.setTx(newX);
 			direction.x *= -1;
+			board.draw[2] = ro.clone();
+			board.draw[3] = rd.clone();
 		}
 
 	}
@@ -76,23 +84,21 @@ public class Ball extends GameObject {
 			transform.setTy(newY);
 			direction.y *= -1;
 		}
-		log().info(" " + np.x);
 		// leaves play area
 		if (np.x < Board.LEFT) {
-			log().info("LEFT " + np.x);
-			board.removeBall(this);
-			board.scores.removePointForPlayer1();
+			// board.removeBall(this);
+			// board.scores.removePointForPlayer1();
 			// return;
 		}
 		if (np.x > Board.RIGHT) {
-			board.removeBall(this);
-			board.scores.removePointForPlayer2();
+			// board.removeBall(this);
+			// board.scores.removePointForPlayer2();
 			// return;
 		}
 
 		// player 1 paddle
-		bouncePadde(board.player1Paddle);
-		bouncePadde(board.player2Paddle);
+		bouncePadde(board.player1Paddle, true);
+		bouncePadde(board.player2Paddle, false);
 
 		board.draw[0] = op.clone();
 		board.draw[1] = np.clone();
