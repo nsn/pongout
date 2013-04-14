@@ -93,7 +93,12 @@ public class Ball extends GameObject {
     }
 
     private boolean bounceLine(Vector s, Vector e, float curve) {
-        if (Lines.linesIntersect(op.x, op.y, np.x, np.y, s.x, s.y, e.x, e.y)) {
+        return bounceLine(op, np, s, e, curve);
+    }
+
+    private boolean bounceLine(Vector o, Vector n, Vector s, Vector e,
+            float curve) {
+        if (Lines.linesIntersect(o.x, o.y, n.x, n.y, s.x, s.y, e.x, e.y)) {
             log().debug("intersect");
             // intersection
             Ray2 movement = new Ray2(op, np.subtract(op).normalize());
@@ -112,8 +117,8 @@ public class Ball extends GameObject {
             float ratio = s.distance(intersection) / s.distance(e) * 2.0f - 1;
             direction.y += curve * ratio;
 
-            transform.setTx(op.x - intersection.x);
-            transform.setTy(op.y - intersection.y);
+            transform.setTx(o.x - intersection.x);
+            transform.setTy(o.y - intersection.y);
 
             // board.draw[4] = intersection.clone();
             //
@@ -127,20 +132,20 @@ public class Ball extends GameObject {
         return false;
     }
 
-    private void bouncePaddle(Paddle paddle, boolean left) {
+    private void bouncePaddle(Vector o, Vector n, Paddle paddle, boolean left) {
         Vector[] b = paddle.getBound();
         boolean bounced = false;
         bounced = bounced
-                || bounceLine(b[Paddle.FRONT_TOP], b[Paddle.FRONT_BOTTOM],
+                || bounceLine(o, n, b[Paddle.FRONT_TOP],
+                        b[Paddle.FRONT_BOTTOM], Paddle.CURVE);
+        bounced = bounced
+                || bounceLine(o, n, b[Paddle.FRONT_TOP], b[Paddle.BACK_TOP],
                         Paddle.CURVE);
         bounced = bounced
-                || bounceLine(b[Paddle.FRONT_TOP], b[Paddle.BACK_TOP],
-                        Paddle.CURVE);
+                || bounceLine(o, n, b[Paddle.FRONT_BOTTOM],
+                        b[Paddle.BACK_BOTTOM], Paddle.CURVE);
         bounced = bounced
-                || bounceLine(b[Paddle.FRONT_BOTTOM], b[Paddle.BACK_BOTTOM],
-                        Paddle.CURVE);
-        bounced = bounced
-                || bounceLine(b[Paddle.BACK_TOP], b[Paddle.BACK_BOTTOM],
+                || bounceLine(o, n, b[Paddle.BACK_TOP], b[Paddle.BACK_BOTTOM],
                         Paddle.CURVE);
 
         if (bounced) {
@@ -197,8 +202,8 @@ public class Ball extends GameObject {
         }
 
         // player paddles
-        bouncePaddle(board.player1Paddle, true);
-        bouncePaddle(board.player2Paddle, false);
+        bouncePaddle(op, np, board.player1Paddle, true);
+        bouncePaddle(op, np, board.player2Paddle, false);
 
         // bricks
         for (Iterator<Spatial> it = board.brickLayout.getChildren().iterator(); it
