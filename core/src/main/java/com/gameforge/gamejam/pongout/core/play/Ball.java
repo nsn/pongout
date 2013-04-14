@@ -90,6 +90,7 @@ public class Ball extends GameObject {
         }
         if (hitSomething) {
             board.collectPowerup(powerup, this);
+            SoundStore.getInstance().getSound("powerup").play();
         }
         return hitSomething;
     }
@@ -274,6 +275,7 @@ public class Ball extends GameObject {
             if (brick.isBroken()) {
                 board.removeBrick(brick);
             }
+            SoundStore.getInstance().getSound("brick").play();
         }
 
         return hitSomething;

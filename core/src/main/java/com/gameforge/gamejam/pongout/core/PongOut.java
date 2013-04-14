@@ -82,9 +82,19 @@ public class PongOut implements Game {
 //        music.prepare();
 //        music.play();
 //        music.setLooping(true);
+        Sound blip = assets().getSound("sounds/blip");
+        blip.prepare();
         
-        SoundStore.getInstance().addSound("blip", assets().getSound("sounds/blip"));
-        SoundStore.getInstance().addSound("damage", assets().getSound("sounds/damage"));
+        SoundStore.getInstance().addSound("blip", blip);
+        Sound damage = assets().getSound("sounds/damage");
+        damage.prepare();
+        SoundStore.getInstance().addSound("damage", damage);
+        Sound brick = assets().getSound("sounds/brick");
+        brick.prepare();
+        SoundStore.getInstance().addSound("brick", brick);
+        Sound powerup = assets().getSound("sounds/powerup");
+        powerup.prepare();
+        SoundStore.getInstance().addSound("powerup", powerup);
         changeState(GameState.STATE.LOADING);        
 
     }
