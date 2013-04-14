@@ -47,8 +47,6 @@ public class PlayState extends GameState {
 
         // init board
         board = new Board(player1Input, player2Input);
-        board.spawnBall(new Vector(800, 100), new Vector(1, 0));
-        board.spawnBall(new Vector(200, 100), new Vector(-1, 0));
         root.addChild(board);
 
         scene = new Scene(root);

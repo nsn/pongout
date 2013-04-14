@@ -32,6 +32,7 @@ public class Ball extends GameObject {
     Player lastBounce = Player.NONE;
     private PongoutSprite sprite;
     boolean isBomb = false;
+    boolean isFast = false;
 
     Ball(Board board, Vector direction) {
         this.board = board;
@@ -158,6 +159,7 @@ public class Ball extends GameObject {
 
         if (bounced) {
             lastBounce = paddle.player;
+            SoundStore.getInstance().getSound("blip").play();
         }
 
         if (left) {
@@ -205,11 +207,13 @@ public class Ball extends GameObject {
             log().info("LEFT " + np.x);
             board.removeBall(this);
             board.scores.removePointForPlayer1();
+            SoundStore.getInstance().getSound("damage").play();
             return;
         }
         if (np.x > Board.RIGHT) {
             board.removeBall(this);
             board.scores.removePointForPlayer2();
+            SoundStore.getInstance().getSound("damage").play();
             return;
         }
 
@@ -312,4 +316,14 @@ public class Ball extends GameObject {
         return hitSomething;
     }
 
+    public void setFast() {
+        isFast = true;
+        sprite.setFrame(2);
+    }
+    
+    public void setBomb() {
+        isBomb = true;
+        sprite.setFrame(1);
+    }
+    
 }

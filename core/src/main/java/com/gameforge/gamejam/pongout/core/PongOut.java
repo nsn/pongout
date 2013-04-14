@@ -2,6 +2,7 @@ package com.gameforge.gamejam.pongout.core;
 
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
+import static playn.core.PlayN.log;
 import playn.core.Game;
 import playn.core.Image;
 import playn.core.ImmediateLayer;
@@ -12,7 +13,9 @@ import com.gameforge.gamejam.pongout.core.play.ImageStore;
 import com.gameforge.gamejam.pongout.core.play.LoadingState;
 import com.gameforge.gamejam.pongout.core.play.PlayState;
 import com.gameforge.gamejam.pongout.core.play.ResultState;
+import com.gameforge.gamejam.pongout.core.play.SoundStore;
 import com.gameforge.gamejam.pongout.core.play.StartState;
+import playn.core.Sound;
 
 public class PongOut implements Game {
     public static final int SCREENWIDTH = 1280;
@@ -21,6 +24,7 @@ public class PongOut implements Game {
     private PlayNRenderer renderer;
     private float frameAlpha = 1.0f;
     private int lastWinner = 0;
+    private Sound music;
 
     @Override
     public void init() {
@@ -73,7 +77,15 @@ public class PongOut implements Game {
         ImageStore.getInstance().addImage("background", backgroundImage);
         ImageStore.getInstance().addImage("player1wins", player1WinsImage);
         ImageStore.getInstance().addImage("player2wins", player2WinsImage);
-        changeState(GameState.STATE.LOADING);
+//        music = assets().getSound("sounds/background");
+//        log().info("music " + music);
+//        music.prepare();
+//        music.play();
+//        music.setLooping(true);
+        
+        SoundStore.getInstance().addSound("blip", assets().getSound("sounds/blip"));
+        SoundStore.getInstance().addSound("damage", assets().getSound("sounds/damage"));
+        changeState(GameState.STATE.LOADING);        
 
     }
 

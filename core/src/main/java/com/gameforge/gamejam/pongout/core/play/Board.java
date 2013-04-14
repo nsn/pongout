@@ -79,9 +79,9 @@ public class Board extends GroupNode<Node> {
         Area a = new Area(DIMENSION);
         addChild(a);
 
-        spawnBall(new Vector(player1Paddle.getLocalTransform().tx,
+        spawnBall(new Vector(player1Paddle.getLocalTransform().tx + 30,
                 player1Paddle.getLocalTransform().ty));
-        spawnBall(new Vector(player2Paddle.getLocalTransform().tx,
+        spawnBall(new Vector(player2Paddle.getLocalTransform().tx - 30,
                 player2Paddle.getLocalTransform().ty));
 
         setBoundaryColor(Color.rgb(255, 0, 255));
@@ -90,6 +90,7 @@ public class Board extends GroupNode<Node> {
     }
 
     public void spawnBall(Vector position) {
+        log().info("spawn ball gets called with pos " + position);
         // direction
         Vector dir = new Vector(-0.1f, random() - 0.5f);
         spawnBall(position, dir);
@@ -159,13 +160,14 @@ public class Board extends GroupNode<Node> {
             if (lastActivePaddle != null) {
                 lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.BALLSPEED);
             }
+            b.setFast();
             increaseBallSpeed = true;
             break;
         case BOMB:
             if (lastActivePaddle != null) {
                 lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.BOMB);
             }
-            b.isBomb = true;
+            b.setBomb();
             break;
         case REPAIR:
             if (lastActivePaddle != null) {
