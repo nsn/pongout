@@ -163,6 +163,15 @@ public class Board extends GroupNode<Node> {
             }
             b.isBomb = true;
             break;
+        case REPAIR:
+            if(lastActivePaddle != null) {
+                lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.REPAIR);
+                if(lastActivePaddle == player1Paddle) {
+                    brickWallPlayer1.repair();
+                } else {
+                    brickWallPlayer2.repair();
+                }
+            }
         }
 
     }

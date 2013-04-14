@@ -23,7 +23,7 @@ public class PowerUp extends GroupNode<Spatial>{
     private int deltaCounter;
     
     public enum TYPE {
-        SPEED,BOMB,ENLARGE,MULTIBALL,BALLSPEED,CONTROLS,GUN
+        SPEED,BOMB,ENLARGE,MULTIBALL,BALLSPEED,CONTROLS,REPAIR
     }
     
     public PowerUp(TYPE type, Vector position) {
@@ -64,7 +64,7 @@ public class PowerUp extends GroupNode<Spatial>{
             case CONTROLS:
                 offset = 845;
                 break;
-            case GUN:
+            case REPAIR:
                 offset = 905;
                 break;
         }

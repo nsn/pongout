@@ -16,7 +16,7 @@ import pythagoras.f.Vector;
  */
 public class Brick extends GroupNode<Spatial> {
     
-    private int hitpoints;
+    int hitpoints;
     PongoutSprite sprite;
     private static final int BRICK_HORIZONTAL_SPACING = 1;
     private static final int BRICK_VERTICAL_SPACING = 1;
@@ -49,7 +49,7 @@ public class Brick extends GroupNode<Spatial> {
         hitpoints -= 1;
         sprite.setFrame(Math.max(0, hitpoints-1));
     }
-
+    
     public boolean isBroken() {
         return hitpoints <= 0;
     }
