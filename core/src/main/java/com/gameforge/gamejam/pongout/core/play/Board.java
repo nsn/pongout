@@ -80,8 +80,8 @@ public class Board extends GroupNode<Node> {
         Area a = new Area(DIMENSION);
         addChild(a);
         
-        spawnBall(new Vector(player1Paddle.getLocalTransform().tx, player1Paddle.getLocalTransform().ty));
-        spawnBall(new Vector(player2Paddle.getLocalTransform().tx, player2Paddle.getLocalTransform().ty));
+        spawnBall(new Vector(player1Paddle.getLocalTransform().tx + 30, player1Paddle.getLocalTransform().ty));
+        spawnBall(new Vector(player2Paddle.getLocalTransform().tx - 30, player2Paddle.getLocalTransform().ty));
 
         setBoundaryColor(Color.rgb(255, 0, 255));
         setDrawBoundary(false);

@@ -145,6 +145,7 @@ public class Ball extends GameObject {
         bounced = bounced || bounceLine(rd, be, Paddle.CURVE);
         if (bounced) {
             lastBounce = paddle.player;
+            SoundStore.getInstance().getSound("blip").play();
         }
     }
 
@@ -169,11 +170,13 @@ public class Ball extends GameObject {
             log().info("LEFT " + np.x);
             board.removeBall(this);
             board.scores.removePointForPlayer1();
+            SoundStore.getInstance().getSound("damage").play();
             return;
         }
         if (np.x > Board.RIGHT) {
             board.removeBall(this);
             board.scores.removePointForPlayer2();
+            SoundStore.getInstance().getSound("damage").play();
             return;
         }
 
