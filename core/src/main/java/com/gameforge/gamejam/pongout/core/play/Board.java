@@ -65,7 +65,7 @@ public class Board extends GroupNode<Node> {
 
         scores = new Scores();
         addChild(scores);
-        
+
         Area a = new Area(DIMENSION);
         addChild(a);
 
@@ -75,9 +75,12 @@ public class Board extends GroupNode<Node> {
     }
 
     public void spawnBall(Vector position) {
-        log().info("pos " + position);
         // direction
         Vector dir = new Vector(-0.1f, random() - 0.5f);
+        spawnBall(position, dir);
+    }
+
+    public void spawnBall(Vector position, Vector dir) {
         Ball b = new Ball(this, dir);
 
         b.setTranslation(position);
@@ -88,7 +91,7 @@ public class Board extends GroupNode<Node> {
 
     public void spawnBall() {
         Vector pos = new Vector(800, 100);
-        spawnBall(pos);
+        spawnBall(pos, new Vector(1, 0));
     }
 
     public void removeBall(Ball b) {
@@ -134,13 +137,13 @@ public class Board extends GroupNode<Node> {
             }
             break;
         case BALLSPEED:
-            if(lastActivePaddle != null) {
+            if (lastActivePaddle != null) {
                 lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.BALLSPEED);
             }
             increaseBallSpeed = true;
             break;
         case BOMB:
-            if(lastActivePaddle != null) {
+            if (lastActivePaddle != null) {
                 lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.BOMB);
             }
             b.isBomb = true;
@@ -175,10 +178,10 @@ public class Board extends GroupNode<Node> {
                 addChild(pu);
             }
         }
-        if(increaseBallSpeed) {
+        if (increaseBallSpeed) {
             for (Ball ball : balls) {
                 ball.speed *= 1.5;
-            }   
+            }
             increaseBallSpeed = false;
         }
         bricksToRemove.clear();
