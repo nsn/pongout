@@ -10,7 +10,6 @@ import pythagoras.f.Dimension;
 import pythagoras.f.Lines;
 import pythagoras.f.MathUtil;
 import pythagoras.f.Point;
-import pythagoras.f.Ray2;
 import pythagoras.f.Vector;
 
 import com.gameforge.gamejam.pongout.core.PongoutSprite;
@@ -109,42 +108,32 @@ public class Ball extends GameObject {
     private boolean bounceLine(Vector s, Vector e, float curve) {
         Vector closest = closestPointOnSeq(s, e);
         Vector distV = np.subtract(closest);
-        float dist = Math.abs(distV.length());
+        float dist = distV.length();
+        if (dist <= 0.0f)
+            log().info("BUG");
         if (dist < RADIUS) {
-            log().info("JAJAJA");
-        }
+            Vector distVUnit = distV.normalize();
+            Vector offset = distVUnit.scale(RADIUS - distV.length());
 
-        if (Lines.linesIntersect(op.x, op.y, np.x, np.y, s.x, s.y, e.x, e.y)) {
-            log().debug("intersect");
-            // intersection
-            Ray2 movement = new Ray2(op, np.subtract(op).normalize());
-            Vector intersection = new Vector();
-            if (!movement.getIntersection(s, e, intersection))
-                return false;
+            Vector translation = op.subtract(np.subtract(offset));
+            translation = direction.normalize().scale(-dist);
+            transform.setTx(translation.x);
+            transform.setTy(translation.y);
 
             // direction
             Vector normal = new Vector((s.y - e.y) * -1, s.x - e.x).normalize();
             float dot = normal.dot(direction);
             Vector diff = normal.scale(2 * dot);
 
-            board.draw[2] = intersection.clone();
-            board.draw[3] = intersection.add(direction.scale(speed));
-
             // flat panel
             direction = direction.subtract(diff).normalize();
             // curve
-            float ratio = s.distance(intersection) / s.distance(e) * 2.0f - 1;
+            float ratio = s.distance(closest) / s.distance(e) * 2.0f - 1;
             direction.y += curve * ratio;
             direction.normalizeLocal();
 
-            transform.setTx(op.x - intersection.x);
-            transform.setTy(op.y - intersection.y);
-
-            board.draw[4] = intersection.clone();
-
-            board.draw[5] = intersection.clone();
-            board.draw[6] = intersection.add(normal.scale(speed));
-
+            board.draw[5] = closest.clone();
+            board.draw[6] = np.subtract(offset);
             return true;
         }
         return false;
@@ -174,28 +163,6 @@ public class Ball extends GameObject {
         return false;
     }
 
-    private boolean bouncePaddleOld(Paddle paddle, boolean left) {
-        Vector[] b = paddle.getBound();
-        boolean bounced = false;
-        bounced = bounced
-                || bounceLine(b[Paddle.FRONT_TOP], b[Paddle.FRONT_BOTTOM],
-                        Paddle.CURVE);
-        bounced = bounced
-                || bounceLine(b[Paddle.FRONT_TOP], b[Paddle.BACK_TOP],
-                        Paddle.CURVE);
-        bounced = bounced
-                || bounceLine(b[Paddle.FRONT_BOTTOM], b[Paddle.BACK_BOTTOM],
-                        Paddle.CURVE);
-        bounced = bounced
-                || bounceLine(b[Paddle.BACK_TOP], b[Paddle.BACK_BOTTOM],
-                        Paddle.CURVE);
-
-        if (bounced) {
-            lastBounce = paddle.player;
-        }
-        return bounced;
-    }
-
     public void update(float delta) {
         super.update(delta);
         oldBoundingRectangle = getWorldBound().clone();
@@ -205,9 +172,9 @@ public class Ball extends GameObject {
         transform.translate(dist.x, dist.y);
 
         ob = oldBoundingRectangle;
-        nb = getWorldBound().translate(transform);
-
         op = new Vector(ob.center().x, ob.center().y);
+
+        nb = getWorldBound().translate(transform);
         np = new Vector(nb.center().x, nb.center().y);
 
         Vector diff = direction.scale(ob.width * .5f);
@@ -232,18 +199,6 @@ public class Ball extends GameObject {
             return;
         }
 
-        // hit upper or lower bounds
-        if (nb.minY() <= Board.OFFSET.y) {
-            float newY = ob.minY() - Board.OFFSET.y;
-            transform.setTy(newY);
-            direction.y *= -1;
-        }
-        if (nb.maxY() >= Board.BOTTOM) {
-            float newY = nb.maxY() - Board.BOTTOM;
-            transform.setTy(newY);
-            direction.y *= -1;
-        }
-
         bouncePaddle(board.player1Paddle, true);
         bouncePaddle(board.player2Paddle, false);
 
@@ -261,6 +216,21 @@ public class Ball extends GameObject {
             if (bouncePowerup(powerUp)) {
                 break;
             }
+        }
+
+        nb = getWorldBound().translate(transform);
+        np = new Vector(nb.center().x, nb.center().y);
+
+        // hit upper or lower bounds
+        if (nb.minY() <= Board.OFFSET.y) {
+            float newY = ob.minY() - Board.OFFSET.y;
+            transform.setTy(newY);
+            direction.y *= -1;
+        }
+        if (nb.maxY() >= Board.BOTTOM) {
+            float newY = nb.maxY() - Board.BOTTOM;
+            transform.setTy(newY);
+            direction.y *= -1;
         }
 
         transform(transform);

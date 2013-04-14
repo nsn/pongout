@@ -47,7 +47,8 @@ public class PlayState extends GameState {
 
         // init board
         board = new Board(player1Input, player2Input);
-        board.spawnBall();
+        board.spawnBall(new Vector(800, 100), new Vector(1, 0));
+        board.spawnBall(new Vector(200, 100), new Vector(-1, 0));
         root.addChild(board);
 
         scene = new Scene(root);
@@ -80,6 +81,8 @@ public class PlayState extends GameState {
         renderRay(surface, board.draw[2], board.draw[3], Color.rgb(0, 255, 0));
         surface.setFillColor(Color.rgb(255, 255, 255));
         surface.fillRect(board.draw[4].x - 1, board.draw[4].y - 1, 3, 3);
+
+        renderRay(surface, board.draw[5], board.draw[6], Color.rgb(255, 0, 0));
 
         // draw paddles
         renderPaddleBound(surface, board.player1Paddle);
