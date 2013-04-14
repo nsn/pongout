@@ -116,6 +116,9 @@ public class PlayState extends GameState {
         if (board.scores.gameOver()) {
             pongOut.changeState(GameState.STATE.RESULT);
         }
+        if(player1Input.action) {
+            pongOut.changeState(GameState.STATE.PLAY);
+        }
     }
 
 }
