@@ -89,7 +89,7 @@ public class Board extends GroupNode<Node> {
     }
 
     public void spawnBall(Vector position) {
-        log().info("pos " + position);
+        log().info("spawn ball gets called with pos " + position);
         // direction
         Vector dir = new Vector(-0.1f, random() - 0.5f);
         Ball b = new Ball(this, dir);
@@ -155,13 +155,14 @@ public class Board extends GroupNode<Node> {
             if(lastActivePaddle != null) {
                 lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.BALLSPEED);
             }
+            b.setFast();
             increaseBallSpeed = true;
             break;
         case BOMB:
             if(lastActivePaddle != null) {
                 lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.BOMB);
             }
-            b.isBomb = true;
+            b.setBomb();
             break;
         case REPAIR:
             if(lastActivePaddle != null) {

@@ -33,6 +33,7 @@ public class Ball extends GameObject {
     Player lastBounce = Player.NONE;
     private PongoutSprite sprite;
     boolean isBomb = false;
+    boolean isFast = false;
 
     Ball(Board board, Vector direction) {
         this.board = board;
@@ -275,4 +276,14 @@ public class Ball extends GameObject {
         return hitSomething;
     }
 
+    public void setFast() {
+        isFast = true;
+        sprite.setFrame(2);
+    }
+    
+    public void setBomb() {
+        isBomb = true;
+        sprite.setFrame(1);
+    }
+    
 }
