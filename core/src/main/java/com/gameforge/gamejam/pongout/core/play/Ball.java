@@ -132,6 +132,7 @@ public class Ball extends GameObject {
 
             board.draw[5] = closest.clone();
             board.draw[6] = np.subtract(offset);
+
             nb = getWorldBound().translate(transform);
             np = new Vector(nb.center().x, nb.center().y);
             return true;
@@ -141,26 +142,39 @@ public class Ball extends GameObject {
 
     private boolean bouncePaddle(Paddle paddle, boolean left) {
         Vector[] b = paddle.getBound();
-        if (bounceLine(b[Paddle.FRONT_TOP], b[Paddle.FRONT_BOTTOM],
-                Paddle.CURVE)) {
+        boolean bounced = false;
+        bounced = bounced
+                || bounceLine(b[Paddle.FRONT_TOP], b[Paddle.FRONT_BOTTOM],
+                        Paddle.CURVE);
+        bounced = bounced
+                || bounceLine(b[Paddle.FRONT_TOP], b[Paddle.BACK_TOP],
+                        Paddle.CURVE);
+        bounced = bounced
+                || bounceLine(b[Paddle.FRONT_BOTTOM], b[Paddle.BACK_BOTTOM],
+                        Paddle.CURVE);
+        bounced = bounced
+                || bounceLine(b[Paddle.BACK_TOP], b[Paddle.BACK_BOTTOM],
+                        Paddle.CURVE);
+
+        if (bounced) {
             lastBounce = paddle.player;
-            return true;
-        }
-        if (bounceLine(b[Paddle.FRONT_TOP], b[Paddle.BACK_TOP], Paddle.CURVE)) {
-            lastBounce = paddle.player;
-            return true;
-        }
-        if (bounceLine(b[Paddle.FRONT_BOTTOM], b[Paddle.BACK_BOTTOM],
-                Paddle.CURVE)) {
-            lastBounce = paddle.player;
-            return true;
-        }
-        if (bounceLine(b[Paddle.BACK_TOP], b[Paddle.BACK_BOTTOM], Paddle.CURVE)) {
-            lastBounce = paddle.player;
-            return true;
         }
 
-        return false;
+        if (left) {
+            float dist = (np.x - RADIUS) - b[Paddle.FRONT_TOP].x;
+            log().info("fooo " + dist);
+            // if (dist < 0)
+            // transform.translateX(-dist);
+            // nb = getWorldBound().translate(transform);
+            // np = new Vector(nb.center().x, nb.center().y);
+
+        } else {
+            float dist = (np.x + RADIUS) - b[Paddle.FRONT_TOP].x;
+            // log().info("baar " + dist);
+            // if (dist < 0)
+            // transform.translateX(dist);
+        }
+        return bounced;
     }
 
     public void update(float delta) {
