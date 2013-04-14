@@ -93,12 +93,7 @@ public class Ball extends GameObject {
     }
 
     private boolean bounceLine(Vector s, Vector e, float curve) {
-        return bounceLine(op, np, s, e, curve);
-    }
-
-    private boolean bounceLine(Vector o, Vector n, Vector s, Vector e,
-            float curve) {
-        if (Lines.linesIntersect(o.x, o.y, n.x, n.y, s.x, s.y, e.x, e.y)) {
+        if (Lines.linesIntersect(op.x, op.y, np.x, np.y, s.x, s.y, e.x, e.y)) {
             log().debug("intersect");
             // intersection
             Ray2 movement = new Ray2(op, np.subtract(op).normalize());
@@ -117,8 +112,8 @@ public class Ball extends GameObject {
             float ratio = s.distance(intersection) / s.distance(e) * 2.0f - 1;
             direction.y += curve * ratio;
 
-            transform.setTx(o.x - intersection.x);
-            transform.setTy(o.y - intersection.y);
+            transform.setTx(op.x - intersection.x);
+            transform.setTy(op.y - intersection.y);
 
             // board.draw[4] = intersection.clone();
             //
@@ -136,17 +131,17 @@ public class Ball extends GameObject {
         Vector[] b = paddle.getBound();
         boolean bounced = false;
         bounced = bounced
-                || bounceLine(op, np, b[Paddle.FRONT_TOP],
-                        b[Paddle.FRONT_BOTTOM], Paddle.CURVE);
-        bounced = bounced
-                || bounceLine(op, np, b[Paddle.FRONT_TOP], b[Paddle.BACK_TOP],
+                || bounceLine(b[Paddle.FRONT_TOP], b[Paddle.FRONT_BOTTOM],
                         Paddle.CURVE);
         bounced = bounced
-                || bounceLine(op, np, b[Paddle.FRONT_BOTTOM],
-                        b[Paddle.BACK_BOTTOM], Paddle.CURVE);
+                || bounceLine(b[Paddle.FRONT_TOP], b[Paddle.BACK_TOP],
+                        Paddle.CURVE);
         bounced = bounced
-                || bounceLine(op, np, b[Paddle.BACK_TOP],
-                        b[Paddle.BACK_BOTTOM], Paddle.CURVE);
+                || bounceLine(b[Paddle.FRONT_BOTTOM], b[Paddle.BACK_BOTTOM],
+                        Paddle.CURVE);
+        bounced = bounced
+                || bounceLine(b[Paddle.BACK_TOP], b[Paddle.BACK_BOTTOM],
+                        Paddle.CURVE);
 
         if (bounced) {
             lastBounce = paddle.player;
