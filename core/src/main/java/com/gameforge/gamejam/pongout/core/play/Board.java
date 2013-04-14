@@ -106,8 +106,13 @@ public class Board extends GroupNode<Node> {
     }
 
     public void spawnBall() {
-        Vector pos = new Vector(800, 100);
-        spawnBall(pos, new Vector(1, 0));
+        Vector pos;
+        if(random()*100 < 50) {
+            pos = new Vector(player1Paddle.getLocalTransform().tx + 30,player1Paddle.getLocalTransform().ty);
+        } else {
+            pos = new Vector(player2Paddle.getLocalTransform().tx - 30,player2Paddle.getLocalTransform().ty);
+        }
+        spawnBall(pos);
     }
 
     public void removeBall(Ball b) {
