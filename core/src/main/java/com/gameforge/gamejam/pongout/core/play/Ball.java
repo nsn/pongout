@@ -162,6 +162,13 @@ public class Ball extends GameObject {
         op = new Vector(ob.center().x, ob.center().y);
         np = new Vector(nb.center().x, nb.center().y);
 
+        Vector diff = direction.scale(ob.width * .5f);
+
+        board.draw[0] = op.clone();
+        board.draw[1] = np.clone();
+        board.draw[2] = op.add(diff);
+        board.draw[3] = np.subtract(diff);
+
         // log().info("asdasd " + op + " <-> " + np);
 
         // leaves play area
