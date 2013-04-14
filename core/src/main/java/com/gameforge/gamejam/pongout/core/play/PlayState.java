@@ -73,18 +73,21 @@ public class PlayState extends GameState {
     public void paint(Surface surface, Rectangle renderRect, float alpha) {
         renderer.render(scene, renderRect, surface, alpha);
 
-        surface.setTransform(1, 0, 0, 1, 0, 0);
-
-        renderRay(surface, board.draw[0], board.draw[1], Color.rgb(255, 0, 0));
-        renderRay(surface, board.draw[2], board.draw[3], Color.rgb(0, 255, 0));
-        surface.setFillColor(Color.rgb(255, 255, 255));
-        surface.fillRect(board.draw[4].x - 1, board.draw[4].y - 1, 3, 3);
-
-        renderRay(surface, board.draw[5], board.draw[6], Color.rgb(255, 0, 0));
-
-        // draw paddles
-        renderPaddleBound(surface, board.player1Paddle);
-        renderPaddleBound(surface, board.player2Paddle);
+        // surface.setTransform(1, 0, 0, 1, 0, 0);
+        //
+        // renderRay(surface, board.draw[0], board.draw[1], Color.rgb(255, 0,
+        // 0));
+        // renderRay(surface, board.draw[2], board.draw[3], Color.rgb(0, 255,
+        // 0));
+        // surface.setFillColor(Color.rgb(255, 255, 255));
+        // surface.fillRect(board.draw[4].x - 1, board.draw[4].y - 1, 3, 3);
+        //
+        // renderRay(surface, board.draw[5], board.draw[6], Color.rgb(255, 0,
+        // 0));
+        //
+        // // draw paddles
+        // renderPaddleBound(surface, board.player1Paddle);
+        // renderPaddleBound(surface, board.player2Paddle);
 
     }
 
