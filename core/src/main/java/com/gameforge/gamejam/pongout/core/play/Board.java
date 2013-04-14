@@ -51,7 +51,7 @@ public class Board extends GroupNode<Node> {
         setDrawBoundary(false);
         setBoundaryColor(Color.blue(255));
         player1Paddle = new Paddle(player1Input, 0, Player.PLAYER1);
-        player1Paddle.translate(new Vector(100, 100));
+        player1Paddle.translate(new Vector(60, 100));
         player1Paddle.setName("player1");
         addChild(player1Paddle);
 
@@ -68,6 +68,9 @@ public class Board extends GroupNode<Node> {
         
         Area a = new Area(DIMENSION);
         addChild(a);
+        
+        spawnBall(new Vector(player1Paddle.getLocalTransform().tx, player1Paddle.getLocalTransform().ty));
+        spawnBall(new Vector(player2Paddle.getLocalTransform().tx, player2Paddle.getLocalTransform().ty));
 
         setBoundaryColor(Color.rgb(255, 0, 255));
         setDrawBoundary(false);
@@ -152,8 +155,8 @@ public class Board extends GroupNode<Node> {
     @Override
     public void update(float deltams) {
         // spawn ball if there are no balls left
-        if (balls.isEmpty()) {
-            spawnBall();
+        if (balls.size() < 2) {
+            //spawnBall();
         }
         for (Ball ball : ballsToSpawn) {
             spawnBall(ball.getWorldPosition());
