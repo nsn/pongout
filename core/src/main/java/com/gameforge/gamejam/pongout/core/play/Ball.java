@@ -11,7 +11,6 @@ import pythagoras.f.Lines;
 import pythagoras.f.MathUtil;
 import pythagoras.f.Point;
 import pythagoras.f.Ray2;
-import pythagoras.f.Rectangle;
 import pythagoras.f.Vector;
 
 import com.gameforge.gamejam.pongout.core.PongoutSprite;
@@ -129,19 +128,21 @@ public class Ball extends GameObject {
     }
 
     private void bouncePaddle(Paddle paddle, boolean left) {
-        Rectangle r = paddle.getBounceRectangle();
-        float xOffset = left ? r.width : 0.0f;
-        Vector ro = new Vector(r.minX() + xOffset, r.minY());
-        Vector rd = new Vector(r.minX() + xOffset, r.maxY());
-        float ed = left ? -1 : 1;
-        Vector be = new Vector(rd.x + (Paddle.PADDLE_WIDTH * .5f * ed), rd.y
-                + (Paddle.PADDLE_WIDTH * .5f));
-        Vector te = new Vector(ro.x + (Paddle.PADDLE_WIDTH * .5f * ed), ro.y
-                - (Paddle.PADDLE_WIDTH * .5f));
+        Vector[] b = paddle.getBound();
         boolean bounced = false;
-        bounced = bounced || bounceLine(ro, rd, Paddle.CURVE);
-        bounced = bounced || bounceLine(te, ro, Paddle.CURVE);
-        bounced = bounced || bounceLine(rd, be, Paddle.CURVE);
+        bounced = bounced
+                || bounceLine(b[Paddle.FRONT_TOP], b[Paddle.FRONT_BOTTOM],
+                        Paddle.CURVE);
+        bounced = bounced
+                || bounceLine(b[Paddle.FRONT_TOP], b[Paddle.BACK_TOP],
+                        Paddle.CURVE);
+        bounced = bounced
+                || bounceLine(b[Paddle.FRONT_BOTTOM], b[Paddle.BACK_BOTTOM],
+                        Paddle.CURVE);
+        bounced = bounced
+                || bounceLine(b[Paddle.BACK_TOP], b[Paddle.BACK_BOTTOM],
+                        Paddle.CURVE);
+
         if (bounced) {
             lastBounce = paddle.player;
         }
