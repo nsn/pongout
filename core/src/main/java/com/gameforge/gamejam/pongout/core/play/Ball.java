@@ -109,8 +109,6 @@ public class Ball extends GameObject {
         Vector closest = closestPointOnSeq(s, e);
         Vector distV = np.subtract(closest);
         float dist = distV.length();
-        if (dist <= 0.0f)
-            log().info("BUG");
         if (dist < RADIUS) {
             Vector distVUnit = distV.normalize();
             Vector offset = distVUnit.scale(RADIUS - distV.length());
@@ -134,6 +132,8 @@ public class Ball extends GameObject {
 
             board.draw[5] = closest.clone();
             board.draw[6] = np.subtract(offset);
+            nb = getWorldBound().translate(transform);
+            np = new Vector(nb.center().x, nb.center().y);
             return true;
         }
         return false;
@@ -203,8 +203,24 @@ public class Ball extends GameObject {
         bouncePaddle(board.player2Paddle, false);
 
         // bricks
-        for (Iterator<Spatial> it = board.brickLayout.getChildren().iterator(); it
+        for (Iterator<Spatial> it = board.brickLayout.getBricks().iterator(); it
                 .hasNext();) {
+            Brick brick = (Brick) it.next();
+            if (bounceBrick(brick)) {
+                break;
+            }
+        }
+
+        // walls
+        for (Iterator<Spatial> it = board.brickWallPlayer1.getChildren()
+                .iterator(); it.hasNext();) {
+            Brick brick = (Brick) it.next();
+            if (bounceBrick(brick)) {
+                break;
+            }
+        }
+        for (Iterator<Spatial> it = board.brickWallPlayer2.getChildren()
+                .iterator(); it.hasNext();) {
             Brick brick = (Brick) it.next();
             if (bounceBrick(brick)) {
                 break;
@@ -223,12 +239,12 @@ public class Ball extends GameObject {
 
         // hit upper or lower bounds
         if (nb.minY() <= Board.OFFSET.y) {
-            float newY = ob.minY() - Board.OFFSET.y;
+            float newY = ob.minY() - Board.OFFSET.y + RADIUS;
             transform.setTy(newY);
             direction.y *= -1;
         }
         if (nb.maxY() >= Board.BOTTOM) {
-            float newY = nb.maxY() - Board.BOTTOM;
+            float newY = nb.maxY() - Board.BOTTOM - RADIUS;
             transform.setTy(newY);
             direction.y *= -1;
         }
@@ -254,19 +270,19 @@ public class Ball extends GameObject {
         if (op.x > r.maxX()) {
             hitSomething = hitSomething
                     || bounceLine(new Vector(r.maxX(), r.minY()),
-                            new Vector(r.maxX(), r.maxY()), 1f);
+                            new Vector(r.maxX(), r.maxY()), 0.0f);
         } else if (op.y > r.maxY()) {
             hitSomething = hitSomething
                     || bounceLine(new Vector(r.minX(), r.maxY()),
-                            new Vector(r.maxX(), r.maxY()), 1f);
+                            new Vector(r.maxX(), r.maxY()), 0.0f);
         } else if (op.x < r.minX()) {
             hitSomething = hitSomething
                     || bounceLine(new Vector(r.minX(), r.minY()),
-                            new Vector(r.minX(), r.maxY()), 1f);
+                            new Vector(r.minX(), r.maxY()), 0.0f);
         } else if (op.y < r.minY()) {
             hitSomething = hitSomething
                     || bounceLine(new Vector(r.minX(), r.minY()),
-                            new Vector(r.maxX(), r.minY()), 1f);
+                            new Vector(r.maxX(), r.minY()), 0.0f);
         }
         if (hitSomething) {
             if (isBomb) {
