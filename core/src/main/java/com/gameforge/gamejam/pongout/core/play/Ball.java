@@ -202,7 +202,14 @@ public class Ball extends GameObject {
         }
 
         // player paddles
-        bouncePaddle(op, np, board.player1Paddle, true);
+        // Vector[] ops = getBounds(ob);
+        // Vector[] nps = getBounds(nb);
+        //
+        // for (int i = 0; i < ops.length; i++) {
+        // bouncePaddle(ops[i], nps[i], board.player1Paddle, true);
+        // bouncePaddle(ops[i], nps[i], board.player2Paddle, false);
+        // }
+        bouncePaddle(op.add(diff), np.subtract(diff), board.player1Paddle, true);
         bouncePaddle(op, np, board.player2Paddle, false);
 
         // bricks
@@ -227,6 +234,15 @@ public class Ball extends GameObject {
         }
         direction.normalizeLocal();
         // super.update(delta);
+    }
+
+    public Vector[] getBounds(BoundingRectangle r) {
+        Vector[] b = new Vector[4];
+        b[0] = new Vector(r.x, r.y);
+        b[1] = new Vector(r.x + r.width, r.y);
+        b[2] = new Vector(r.x, r.y + r.height);
+        b[3] = new Vector(r.x + r.width, r.y + r.height);
+        return b;
     }
 
     public Point center() {
