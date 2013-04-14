@@ -3,3 +3,4 @@ target
 .settings
 .classpath
 html/src/main/webapp/WEB-INF/lib/
+package
