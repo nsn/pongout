@@ -26,7 +26,7 @@ public class Paddle extends GroupNode<Spatial> {
     public static final int MIDDLE_TRANSLATION_DEFAULT = 30;
 
     public static final int BASEFRAME = 0;
-    public static final float CURVE = 0.5f;
+    public static final float CURVE = 1f;
     public static final float BOUNCE_SUB = 10.0f;
     public static final float BOUNCE_ADD = 15.0f;
     public static final int SIZE_INCREASE = 60;
