@@ -39,7 +39,7 @@ public class Board extends GroupNode<Node> {
     BrickLayout brickLayout;
     BrickWall brickWallPlayer1;
     BrickWall brickWallPlayer2;
-    
+
     boolean gameOver;
     private boolean increaseBallSpeed = false;
 
@@ -72,16 +72,17 @@ public class Board extends GroupNode<Node> {
         addChild(brickWallPlayer1);
         brickWallPlayer2 = new BrickWall(1210);
         addChild(brickWallPlayer2);
-        
-        
+
         scores = new Scores();
         addChild(scores);
-        
+
         Area a = new Area(DIMENSION);
         addChild(a);
-        
-        spawnBall(new Vector(player1Paddle.getLocalTransform().tx + 30, player1Paddle.getLocalTransform().ty));
-        spawnBall(new Vector(player2Paddle.getLocalTransform().tx - 30, player2Paddle.getLocalTransform().ty));
+
+        spawnBall(new Vector(player1Paddle.getLocalTransform().tx + 30,
+                player1Paddle.getLocalTransform().ty));
+        spawnBall(new Vector(player2Paddle.getLocalTransform().tx - 30,
+                player2Paddle.getLocalTransform().ty));
 
         setBoundaryColor(Color.rgb(255, 0, 255));
         setDrawBoundary(false);
@@ -92,6 +93,10 @@ public class Board extends GroupNode<Node> {
         log().info("spawn ball gets called with pos " + position);
         // direction
         Vector dir = new Vector(-0.1f, random() - 0.5f);
+        spawnBall(position, dir);
+    }
+
+    public void spawnBall(Vector position, Vector dir) {
         Ball b = new Ball(this, dir);
 
         b.setTranslation(position);
@@ -102,7 +107,7 @@ public class Board extends GroupNode<Node> {
 
     public void spawnBall() {
         Vector pos = new Vector(800, 100);
-        spawnBall(pos);
+        spawnBall(pos, new Vector(1, 0));
     }
 
     public void removeBall(Ball b) {
@@ -110,10 +115,10 @@ public class Board extends GroupNode<Node> {
     }
 
     public void removeBrick(Brick b) {
-        if(b.isWallBrick) {
+        if (b.isWallBrick) {
             wallBricksToRemove.add(b);
         } else {
-            bricksToRemove.add(b);            
+            bricksToRemove.add(b);
         }
     }
 
@@ -152,22 +157,22 @@ public class Board extends GroupNode<Node> {
             }
             break;
         case BALLSPEED:
-            if(lastActivePaddle != null) {
+            if (lastActivePaddle != null) {
                 lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.BALLSPEED);
             }
             b.setFast();
             increaseBallSpeed = true;
             break;
         case BOMB:
-            if(lastActivePaddle != null) {
+            if (lastActivePaddle != null) {
                 lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.BOMB);
             }
             b.setBomb();
             break;
         case REPAIR:
-            if(lastActivePaddle != null) {
+            if (lastActivePaddle != null) {
                 lastActivePaddle.setCurrentPowerup(PowerUp.TYPE.REPAIR);
-                if(lastActivePaddle == player1Paddle) {
+                if (lastActivePaddle == player1Paddle) {
                     brickWallPlayer1.repair();
                 } else {
                     brickWallPlayer2.repair();
@@ -204,18 +209,18 @@ public class Board extends GroupNode<Node> {
             }
         }
         bricksToRemove.clear();
-        for(Brick brick : wallBricksToRemove) {
+        for (Brick brick : wallBricksToRemove) {
             brickWallPlayer1.getChildren().remove(brick);
             brickWallPlayer2.getChildren().remove(brick);
         }
         wallBricksToRemove.clear();
-        if(brickLayout.getChildren().isEmpty()) {
+        if (brickLayout.getChildren().isEmpty()) {
             brickLayout.respawn();
         }
-        if(increaseBallSpeed) {
+        if (increaseBallSpeed) {
             for (Ball ball : balls) {
                 ball.speed *= 1.5;
-            }   
+            }
             increaseBallSpeed = false;
         }
         for (PowerUp powerUp : powerUpsToRemove) {

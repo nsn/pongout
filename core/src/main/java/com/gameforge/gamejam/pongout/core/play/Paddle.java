@@ -11,6 +11,10 @@ import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Spatial;
 
 public class Paddle extends GroupNode<Spatial> {
+    public static final int FRONT_TOP = 0;
+    public static final int FRONT_BOTTOM = 1;
+    public static final int BACK_TOP = 2;
+    public static final int BACK_BOTTOM = 3;
     public static final int PADDLE_WIDTH = 30;
     public static final int TOP_OFFSET = 0;
     public static final int BOTTOM_OFFSET = 30;
@@ -22,8 +26,9 @@ public class Paddle extends GroupNode<Spatial> {
     public static final int MIDDLE_TRANSLATION_DEFAULT = 30;
 
     public static final int BASEFRAME = 0;
-    public static final float CURVE = 0.5f;
+    public static final float CURVE = 1f;
     public static final float BOUNCE_SUB = 10.0f;
+    public static final float BOUNCE_ADD = 15.0f;
     public static final int SIZE_INCREASE = 60;
     public static final int MAX_SIZE = 240;
     private final PongoutSprite top;
@@ -139,6 +144,21 @@ public class Paddle extends GroupNode<Spatial> {
         }
 
         transform(transform);
+    }
+
+    public Vector[] getBound() {
+        Rectangle r = getBounceRectangle();
+        boolean left = frameModifier > 0;
+        float xOffset = left ? 0.0f : r.width;
+
+        Vector[] bounds = new Vector[4];
+        bounds[FRONT_TOP] = new Vector(r.minX() + xOffset, r.minY());
+        bounds[FRONT_BOTTOM] = new Vector(r.minX() + xOffset, r.maxY());
+        bounds[BACK_TOP] = new Vector(r.maxX() - xOffset, r.minY() - BOUNCE_ADD);
+        bounds[BACK_BOTTOM] = new Vector(r.maxX() - xOffset, r.maxY()
+                + BOUNCE_ADD);
+
+        return bounds;
     }
 
     public Rectangle getBounceRectangle() {

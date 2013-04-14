@@ -79,6 +79,26 @@ public class PlayState extends GameState {
         renderRay(surface, board.draw[2], board.draw[3], Color.rgb(0, 255, 0));
         surface.setFillColor(Color.rgb(255, 255, 255));
         surface.fillRect(board.draw[4].x - 1, board.draw[4].y - 1, 3, 3);
+
+        renderRay(surface, board.draw[5], board.draw[6], Color.rgb(255, 0, 0));
+
+        // draw paddles
+        renderPaddleBound(surface, board.player1Paddle);
+        renderPaddleBound(surface, board.player2Paddle);
+
+    }
+
+    private void renderPaddleBound(Surface s, Paddle p) {
+        Vector[] bound = p.getBound();
+        renderRay(s, bound[Paddle.FRONT_TOP], bound[Paddle.FRONT_BOTTOM],
+                Color.rgb(0, 255, 0));
+        renderRay(s, bound[Paddle.FRONT_BOTTOM], bound[Paddle.BACK_BOTTOM],
+                Color.rgb(0, 255, 0));
+        renderRay(s, bound[Paddle.BACK_BOTTOM], bound[Paddle.BACK_TOP],
+                Color.rgb(0, 255, 0));
+        renderRay(s, bound[Paddle.FRONT_TOP], bound[Paddle.BACK_TOP],
+                Color.rgb(0, 255, 0));
+
     }
 
     private void renderRay(Surface surface, Vector p1, Vector p2, int color) {
