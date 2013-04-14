@@ -21,6 +21,7 @@ public class Ball extends GameObject {
     private static final float INITIAL_SPEED = 12f; // pixels per msec
     private static final Dimension DIMENSION = new Dimension(20, 20);
     private static final Vector OFFSET = new Vector(0, 420);
+    public static final float RADIUS = DIMENSION.width / 2;
     float speed; // pixels/ms
     Vector direction;
     AffineTransform transform;
@@ -92,7 +93,27 @@ public class Ball extends GameObject {
         return hitSomething;
     }
 
+    private Vector closestPointOnSeq(Vector segA, Vector segB) {
+        Vector segV = segB.subtract(segA);
+        Vector ptV = np.subtract(segA);
+        Vector segVUnit = segV.normalize();
+        float proj = ptV.dot(segVUnit);
+        if (proj <= 0.0f)
+            return segA.clone();
+        if (proj > segV.length())
+            return segB.clone();
+        Vector ProjV = segVUnit.scale(proj);
+        return ProjV.add(segA);
+    }
+
     private boolean bounceLine(Vector s, Vector e, float curve) {
+        Vector closest = closestPointOnSeq(s, e);
+        Vector distV = np.subtract(closest);
+        float dist = Math.abs(distV.length());
+        if (dist < RADIUS) {
+            log().info("JAJAJA");
+        }
+
         if (Lines.linesIntersect(op.x, op.y, np.x, np.y, s.x, s.y, e.x, e.y)) {
             log().debug("intersect");
             // intersection
@@ -106,21 +127,23 @@ public class Ball extends GameObject {
             float dot = normal.dot(direction);
             Vector diff = normal.scale(2 * dot);
 
+            board.draw[2] = intersection.clone();
+            board.draw[3] = intersection.add(direction.scale(speed));
+
             // flat panel
             direction = direction.subtract(diff).normalize();
             // curve
             float ratio = s.distance(intersection) / s.distance(e) * 2.0f - 1;
             direction.y += curve * ratio;
+            direction.normalizeLocal();
 
             transform.setTx(op.x - intersection.x);
             transform.setTy(op.y - intersection.y);
 
-            // board.draw[4] = intersection.clone();
-            //
-            // board.draw[2] = intersection.clone();
-            // board.draw[3] = intersection.add(direction.scale(speed * 2));
-            // board.draw[5] = intersection.clone();
-            // board.draw[6] = intersection.add(normal.scale(speed));
+            board.draw[4] = intersection.clone();
+
+            board.draw[5] = intersection.clone();
+            board.draw[6] = intersection.add(normal.scale(speed));
 
             return true;
         }
@@ -128,6 +151,30 @@ public class Ball extends GameObject {
     }
 
     private boolean bouncePaddle(Paddle paddle, boolean left) {
+        Vector[] b = paddle.getBound();
+        if (bounceLine(b[Paddle.FRONT_TOP], b[Paddle.FRONT_BOTTOM],
+                Paddle.CURVE)) {
+            lastBounce = paddle.player;
+            return true;
+        }
+        if (bounceLine(b[Paddle.FRONT_TOP], b[Paddle.BACK_TOP], Paddle.CURVE)) {
+            lastBounce = paddle.player;
+            return true;
+        }
+        if (bounceLine(b[Paddle.FRONT_BOTTOM], b[Paddle.BACK_BOTTOM],
+                Paddle.CURVE)) {
+            lastBounce = paddle.player;
+            return true;
+        }
+        if (bounceLine(b[Paddle.BACK_TOP], b[Paddle.BACK_BOTTOM], Paddle.CURVE)) {
+            lastBounce = paddle.player;
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean bouncePaddleOld(Paddle paddle, boolean left) {
         Vector[] b = paddle.getBound();
         boolean bounced = false;
         bounced = bounced
