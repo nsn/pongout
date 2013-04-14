@@ -193,13 +193,30 @@ public class Ball extends GameObject {
         bouncePaddle(board.player2Paddle, false);
 
         // bricks
-        for (Iterator<Spatial> it = board.brickLayout.getChildren().iterator(); it
+        for (Iterator<Spatial> it = board.brickLayout.getBricks().iterator(); it
                 .hasNext();) {
             Brick brick = (Brick) it.next();
             if (bounceBrick(brick)) {
                 break;
             }
         }
+        
+        // walls
+        for (Iterator<Spatial> it = board.brickWallPlayer1.getChildren().iterator(); it
+                .hasNext();) {
+            Brick brick = (Brick) it.next();
+            if (bounceBrick(brick)) {
+                break;
+            }
+        }
+        for (Iterator<Spatial> it = board.brickWallPlayer2.getChildren().iterator(); it
+                .hasNext();) {
+            Brick brick = (Brick) it.next();
+            if (bounceBrick(brick)) {
+                break;
+            }
+        }
+        
 
         // powerups
         for (PowerUp powerUp : board.powerUps) {

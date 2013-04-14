@@ -23,6 +23,7 @@ public class Brick extends GroupNode<Spatial> {
     public static final int BRICK_HEIGHT = 60;
     public static final int BRICK_WIDTH = 30;
     private static final int BRICK_OFFSET = 485;
+    boolean isWallBrick;
     
     Brick(float xpos, float ypos, float xoffset, float yoffset, int hitpoints) {
         this.hitpoints = hitpoints;
@@ -52,4 +53,5 @@ public class Brick extends GroupNode<Spatial> {
     public boolean isBroken() {
         return hitpoints <= 0;
     }
+    
 }
