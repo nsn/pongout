@@ -162,20 +162,14 @@ public class Ball extends GameObject {
             SoundStore.getInstance().getSound("blip").play();
         }
 
-        if (left) {
-            float dist = (np.x - RADIUS) - b[Paddle.FRONT_TOP].x;
-            log().info("fooo " + dist);
-            // if (dist < 0)
-            // transform.translateX(-dist);
-            // nb = getWorldBound().translate(transform);
-            // np = new Vector(nb.center().x, nb.center().y);
-
-        } else {
-            float dist = (np.x + RADIUS) - b[Paddle.FRONT_TOP].x;
-            // log().info("baar " + dist);
-            // if (dist < 0)
-            // transform.translateX(dist);
+        if (nb.intersects(paddle.getBounceRectangle())) {
+            if (left) {
+                transform.setTx(ob.minX() - b[Paddle.FRONT_TOP].x);
+            } else {
+                transform.setTx(b[Paddle.FRONT_TOP].x - ob.maxX());
+            }
         }
+
         return bounced;
     }
 
@@ -320,10 +314,10 @@ public class Ball extends GameObject {
         isFast = true;
         sprite.setFrame(2);
     }
-    
+
     public void setBomb() {
         isBomb = true;
         sprite.setFrame(1);
     }
-    
+
 }
