@@ -32,8 +32,12 @@ public class BrickLayout extends GroupNode<Spatial> {
     BrickWall brickWallPlayer1;
     BrickWall brickWallPlayer2;
     
-    public BrickLayout() {
-        respawn(0);
+    public BrickLayout(boolean firstStart) {
+        if(firstStart) {
+            respawn(0);            
+        } else {
+            respawn();
+        }
     }
     
     public final void respawn(int roll) {

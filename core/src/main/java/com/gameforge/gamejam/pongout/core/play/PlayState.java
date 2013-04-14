@@ -22,10 +22,11 @@ public class PlayState extends GameState {
     private final UserInput player1Input;
     private final UserInput player2Input;
     private Board board;
+    private boolean firstStart;
 
-    public PlayState(PlayNRenderer renderer, PongOut pongOut) {
+    public PlayState(PlayNRenderer renderer, PongOut pongOut, boolean firstStart) {
         super(GameState.STATE.PLAY, renderer, pongOut);
-
+        this.firstStart = firstStart;
         // init input
         inputListeners = new InputListenerList();
 
@@ -46,7 +47,7 @@ public class PlayState extends GameState {
         GroupNode<Spatial> root = new GroupNode<Spatial>();
 
         // init board
-        board = new Board(player1Input, player2Input);
+        board = new Board(player1Input, player2Input, firstStart);
         root.addChild(board);
 
         scene = new Scene(root);

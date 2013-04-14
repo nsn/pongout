@@ -25,6 +25,7 @@ public class PongOut implements Game {
     private float frameAlpha = 1.0f;
     private int lastWinner = 0;
     private Sound music;
+    private int starts = 0;
 
     @Override
     public void init() {
@@ -105,7 +106,8 @@ public class PongOut implements Game {
         }
         switch (newState) {
         case PLAY:
-            changeState(new PlayState(renderer, this));
+            changeState(new PlayState(renderer, this, (starts==0)));
+            starts++;
             break;
         case RESULT:
             changeState(new ResultState(renderer, this, lastWinner));

@@ -39,11 +39,13 @@ public class Board extends GroupNode<Node> {
     BrickLayout brickLayout;
     BrickWall brickWallPlayer1;
     BrickWall brickWallPlayer2;
+    private boolean firstStart;
 
     boolean gameOver;
     private boolean increaseBallSpeed = false;
 
-    public Board(UserInput player1Input, UserInput player2Input) {
+    public Board(UserInput player1Input, UserInput player2Input, boolean firstStart) {
+        this.firstStart = firstStart;
         setTranslation(OFFSET);
         balls = new ArrayList<Ball>();
         ballsToRemove = new ArrayList<Ball>();
@@ -65,7 +67,7 @@ public class Board extends GroupNode<Node> {
         player2Paddle.setName("player2");
         addChild(player2Paddle);
 
-        brickLayout = new BrickLayout();
+        brickLayout = new BrickLayout(firstStart);
         addChild(brickLayout);
 
         brickWallPlayer1 = new BrickWall(0);

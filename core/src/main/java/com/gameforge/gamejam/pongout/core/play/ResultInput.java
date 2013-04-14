@@ -14,6 +14,7 @@ import playn.core.Keyboard;
 public class ResultInput implements Keyboard.Listener {
 
     boolean newGame = false;
+    boolean randomLevel = false;
     
     public ResultInput() {
         super();
@@ -24,6 +25,9 @@ public class ResultInput implements Keyboard.Listener {
     public void onKeyDown(Keyboard.Event event) {
         if(event.key() == Key.ENTER) {
             newGame = true;
+        }
+        if(event.key() == Key.L) {
+            randomLevel = true;
         }
     }
 
