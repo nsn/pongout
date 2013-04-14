@@ -53,6 +53,10 @@ public class UserInput implements Keyboard.Listener {
 			action = targetState;
 			return;
 		}
+		if (event.key() == Key.L) {
+			action = targetState;
+			return;
+		}
 
 	}
 
