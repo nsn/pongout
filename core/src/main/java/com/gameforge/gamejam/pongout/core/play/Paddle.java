@@ -132,7 +132,7 @@ public class Paddle extends GroupNode<Spatial> {
         BoundingRectangle nb = ob.translate(transform);
 
         if (nb.minY() <= Board.TOP) {
-            transform.setTy(ob.minY() - Board.TOP);
+            transform.setTy(Board.TOP - ob.minY());
         }
         if (nb.maxY() >= Board.BOTTOM) {
             transform.setTy(Board.BOTTOM - ob.maxY());
@@ -150,5 +150,5 @@ public class Paddle extends GroupNode<Spatial> {
     public UserInput getUserInput() {
         return userInput;
     }
-    
+
 }

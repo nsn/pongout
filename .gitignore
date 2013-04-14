@@ -2,3 +2,4 @@ target
 .project
 .settings
 .classpath
+html/src/main/webapp/WEB-INF/lib/

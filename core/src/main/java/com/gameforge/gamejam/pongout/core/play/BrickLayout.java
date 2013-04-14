@@ -4,12 +4,15 @@
  */
 package com.gameforge.gamejam.pongout.core.play;
 
-import com.google.gson.Gson;
+import playn.core.Json;
+import playn.core.Json.Array;
+import playn.core.PlayN;
+
 import com.nightspawn.sg.GroupNode;
 import com.nightspawn.sg.Spatial;
 import static playn.core.PlayN.log;
 /**
- *
+ * 
  * @author sascha
  */
 public class BrickLayout extends GroupNode<Spatial> {
@@ -18,19 +21,19 @@ public class BrickLayout extends GroupNode<Spatial> {
     private static final int BASEY = 0;
 
     public BrickLayout() {
-
-        Gson gson = new Gson();
-        int[][] brickLayout = gson.fromJson("[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[3,2,2,1,2,1,2,1,2,1,2,1,2,1,2,2,3],[0,0,0,0,0,4,4,3,0,3,4,4,0,0,0,0,0],[0,1,2,0,1,0,4,3,0,3,4,0,1,0,2,1,0],[2,1,2,3,0,0,5,0,5,0,5,0,0,3,2,1,2],[0,2,3,0,4,0,3,5,0,5,3,0,4,0,3,2,0],[2,1,2,3,0,0,5,0,5,0,5,0,0,3,2,1,2],[0,1,2,0,1,0,4,3,0,3,4,0,1,0,2,1,0],[0,0,0,0,0,4,4,3,0,3,4,4,0,0,0,0,0],[3,2,2,1,2,1,2,1,2,1,2,1,2,1,2,2,3],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]", int[][].class);
-        //int[][] brickLayout = gson.fromJson("[[5]]", int[][].class);
+        Json.Array arr = PlayN
+                .json()
+                .parseArray(
+                        "[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[3,2,2,1,2,1,2,1,2,1,2,1,2,1,2,2,3],[0,0,0,0,0,4,4,3,0,3,4,4,0,0,0,0,0],[0,1,2,0,1,0,4,3,0,3,4,0,1,0,2,1,0],[2,1,2,3,0,0,5,0,5,0,5,0,0,3,2,1,2],[0,2,3,0,4,0,3,5,0,5,3,0,4,0,3,2,0],[2,1,2,3,0,0,5,0,5,0,5,0,0,3,2,1,2],[0,1,2,0,1,0,4,3,0,3,4,0,1,0,2,1,0],[0,0,0,0,0,4,4,3,0,3,4,4,0,0,0,0,0],[3,2,2,1,2,1,2,1,2,1,2,1,2,1,2,2,3],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]");
 
         Brick brick;
-        for (int i = 0; i < brickLayout.length; i++) {
-            int[] row = brickLayout[i];
-            for (int j = 0; j < row.length; j++) {
-                int hitpoints = row[j];
-                if(hitpoints > 0) {
+        for (int i = 0; i < arr.length(); i++) {
+            Array row = arr.getArray(i);
+            for (int j = 0; j < row.length(); j++) {
+                int hitpoints = row.getInt(j);
+                if (hitpoints > 0) {
                     brick = new Brick(j, i, BASEX, BASEY, hitpoints);
-                    addChild(brick);                    
+                    addChild(brick);
                 }
             }
         }
@@ -44,5 +47,5 @@ public class BrickLayout extends GroupNode<Spatial> {
         }
 
     }
-    
+
 }
